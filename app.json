@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Talkook",
-    "slug": "Talkook",
+    "name": "Talkook-App",
+    "slug": "Talkook-App",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
