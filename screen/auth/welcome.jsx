@@ -1,54 +1,18 @@
-
-
-
-
-
 import React, { useState, useRef, useEffect } from 'react';
-import { Text, View, Image, ImageBackground, Dimensions, ScrollView, TouchableOpacity ,StatusBar, Platform,Animated,Easing } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Text, View, Image, ImageBackground, Dimensions, ScrollView, TouchableOpacity, Animated, Easing } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import * as NavigationBar from 'expo-navigation-bar';
-import Toast from 'react-native-toast-message';
 import { useTheme } from '../../hooks/useTheme';
-
-
+import { useResponsiveSize } from '../../hooks/useResponsiveSize';
+import { Button } from '../../components/Button';
+import { ScreenWrapper } from '../../components/ScreenWrapper';
+import { palette } from '../../theme/constants';
 
 const { width, height } = Dimensions.get('window');
 
 // Background image path
 const BACKGROUND_IMAGE = require('../../assets/image/background/welcome-bg.png');
-
-const palette = {
-  primary: '#0B5FFF',
-  primaryDark: '#0A46D4',
-  overlayDeep: '#0B1B3A',
-  overlayDeepDeep: '#0f172a',
-  textPrimary: '#F8FAFC',
-  textSecondary: 'rgba(248, 250, 252, 0.82)',
-  indicatorActive: '#FFFFFF',
-  indicatorInactive: 'rgba(255, 255, 255, 0.4)',
-};
-
-
-const getResponsiveSize = () => {
-  const isSmall = width < 360 || height < 700;
-  const isLarge = width > 430 || height > 900;
-
-  return {
-      titleFontSize: isSmall ? 32 : isLarge ? 44 : 38,
-      descriptionFontSize: isSmall ? 15 : isLarge ? 19 : 17,
-      titleLineHeight: isSmall ? 40 : isLarge ? 54 : 46,
-      descriptionLineHeight: isSmall ? 22 : isLarge ? 28 : 24,
-      paddingTop: isSmall ? 18 : 24,
-      paddingHorizontal: isSmall ? 6 : 10,
-      iconSize: isSmall ? 22 : 26,
-      forwardIconSize: isSmall ? 26 : 30,
-      imageWidth: isSmall ? 0.9 : 0.92,
-      imageHeight: isSmall ? 0.46 : 0.52,
-  };
-};
 
 
 const WelcomeScreen = () => {
@@ -56,9 +20,8 @@ const WelcomeScreen = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const scrollViewRef = useRef(null);
   const navigation = useNavigation();
-  const responsiveSizes = getResponsiveSize();
-  const insets = useSafeAreaInsets();
-  const { isDark } = useTheme();
+  const responsiveSizes = useResponsiveSize('welcome');
+  const { isDark, toggleTheme } = useTheme();
 
 
 
@@ -89,7 +52,7 @@ const fadeAnim = useRef(new Animated.Value(0)).current;
 
 useEffect(() => {
     if (currentSlide === slides.length - 1) {
-        fadeAnim.setValue(0);
+        // Animate in when reaching last slide
         Animated.timing(fadeAnim, {
             toValue: 1,
             duration: 600,
@@ -97,6 +60,7 @@ useEffect(() => {
             easing: Easing.out(Easing.ease)
         }).start();
     } else {
+        // Immediately hide when not on last slide
         fadeAnim.setValue(0);
     }
 }, [currentSlide, fadeAnim, slides.length])
@@ -110,29 +74,10 @@ const handleScroll = (event) => {
   }
 };
 
-useEffect(() => {
-  if (Platform.OS === 'android') {
-      // برای Android 15+ با edge-to-edge، فقط می‌توانیم رنگ دکمه‌ها را تنظیم کنیم
-      // رنگ پس‌زمینه باید با View overlay شبیه‌سازی شود
-      NavigationBar.setButtonStyleAsync('light');
-      
-      // برای نسخه‌های قدیمی‌تر Android که edge-to-edge ندارند
-      // می‌توانیم رنگ پس‌زمینه را مستقیماً تنظیم کنیم
-      if (insets.bottom === 0) {
-          try {
-              NavigationBar.setBackgroundColorAsync(palette.primary);
-          } catch (error) {
-              // اگر edge-to-edge فعال باشد، این خطا می‌دهد
-              console.log('Navigation bar background color not supported with edge-to-edge');
-          }
-      }
-  }
-}, [insets.bottom]);
 
     return (
-      <SafeAreaView className="flex-1"  style={{ backgroundColor: palette.primary }} >
-      <StatusBar barStyle={isDark ? "light-content" : "light-content"}/>
-      <ImageBackground 
+      <ScreenWrapper backgroundColor={palette.primary}>
+        <ImageBackground 
           source={BACKGROUND_IMAGE}
           className="flex-1"
           resizeMode="cover"
@@ -148,6 +93,30 @@ useEffect(() => {
               className="flex-1"
           >
       <View className="flex-1 relative">
+          {/* Theme Toggle Button - Only on First Slide */}
+          {currentSlide === 0 && (
+              <View className="absolute top-12 right-6 z-30">
+                  <TouchableOpacity
+                      onPress={toggleTheme}
+                      activeOpacity={0.7}
+                      className="bg-white/20 dark:bg-gray-800/30 backdrop-blur-sm rounded-full p-3"
+                      style={{
+                          shadowColor: 'rgba(0, 0, 0, 0.2)',
+                          shadowOffset: { width: 0, height: 2 },
+                          shadowOpacity: 0.3,
+                          shadowRadius: 4,
+                          elevation: 5,
+                      }}
+                  >
+                      <Ionicons 
+                          name={isDark ? 'sunny' : 'moon'} 
+                          size={24} 
+                          color="#FFFFFF" 
+                      />
+                  </TouchableOpacity>
+              </View>
+          )}
+          
           {/* ScrollView for Swipe */}
           <ScrollView
               ref={scrollViewRef}
@@ -163,7 +132,7 @@ useEffect(() => {
               {slides.map((slide) => (
                   <View key={slide.id} style={{ width: width }} className="flex-1">
                       {/* Text Content - Top */}
-                      <View className="px-8 pt-16 pb-6">
+                      <View className="px-8 pt-24 pb-6">
                           <Text
                               className="font-bold font-montserrat text-white"
                               style={{
@@ -187,7 +156,7 @@ useEffect(() => {
                       </View>
 
                       {/* Image Container - Bottom */}
-                      <View className="justify-center items-center w-full px-6 flex-[0.75] pt-6">
+                      <View className="justify-center items-center w-full px-6 flex-[0.75] pt-12">
                           <Image
                               source={slide.image}
                               style={{ width: width * responsiveSizes.imageWidth, height: height * responsiveSizes.imageHeight }}
@@ -199,33 +168,25 @@ useEffect(() => {
           </ScrollView>
 
           {/* Get Started Button - Only on Last Slide */}
-          {/* {currentSlide === slides.length - 1 && ( */}
-              <Animated.View style={{ 
-                  opacity: fadeAnim,
-              }} className="absolute bottom-20 left-0 right-0 px-8 z-20">
-                  <TouchableOpacity
+          {currentSlide === slides.length - 1 && (
+              <Animated.View 
+                  style={{ 
+                      opacity: fadeAnim,
+                  }} 
+                  className="absolute bottom-20 left-0 right-0 px-8 z-20"
+              >
+                  <Button
+                      variant="normal"
+                      text="Get Started"
+                      icon="rocket"
+                      iconPosition="right"
+                      size="large"
                       onPress={() => navigation.navigate('Login')}
-                      activeOpacity={0.85}
-                      className="bg-white dark:bg-gray-800 rounded-full py-4 px-6 flex-row items-center justify-center gap-3"
-                      style={{
-                          shadowColor: 'rgba(0, 0, 0, 0.25)',
-                          shadowOffset: { width: 0, height: 6 },
-                          shadowOpacity: 0.35,
-                          shadowRadius: 12,
-                          elevation: 10,
-                      }}
-                  >
-                      <Text className="font-bold text-lg font-montserrat dark:text-white" style={{ color: isDark ? '#FFFFFF' : palette.primary }}>
-                          Get Started
-                      </Text>
-                      <Ionicons 
-                          name="arrow-forward" 
-                          size={22}
-                          color={isDark ? '#FFFFFF' : palette.primary}
-                      />
-                  </TouchableOpacity>
+                      className="rounded-full"
+                      forceTheme="light"
+                  />
               </Animated.View>
-          {/* )} */}
+          )}
 
           {/* Slide Indicators with Swipe Hint - Bottom */}
           <View className="absolute bottom-6 left-0 right-0 flex-row justify-center items-center gap-3">
@@ -263,21 +224,8 @@ useEffect(() => {
           </View>
       </View>
           </LinearGradient>
-      </ImageBackground>
-      {/* Navigation Bar Overlay برای Android 15+ با edge-to-edge */}
-      {Platform.OS === 'android' && insets.bottom > 0 && (
-          <View 
-              style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  height: insets.bottom,
-                  backgroundColor: palette.overlayDeepDeep,
-              }}
-          />
-      )}
-  </SafeAreaView>
+        </ImageBackground>
+      </ScreenWrapper>
     )
 }
 
