@@ -12,6 +12,7 @@ import AppNavigator from './navigation/mainNav';
 import AuthStack from './navigation/auth';
 import store from './store/store';
 import Toast from 'react-native-toast-message';
+import { ThemeProvider } from './components/ThemeProvider';
 
 
 export default function App() {
@@ -29,9 +30,11 @@ export default function App() {
   if (!fontsLoaded) {
     return (
       <Provider store={store}>
-        <View>
-          <Text>Loading fonts...</Text>
-        </View>
+        <ThemeProvider>
+          <View>
+            <Text>Loading fonts...</Text>
+          </View>
+        </ThemeProvider>
       </Provider>
     );
   }
@@ -39,9 +42,11 @@ export default function App() {
   if (fontError) {
     return (
       <Provider store={store}>
-        <View>
-          <Text>Error loading fonts...</Text>
-        </View>
+        <ThemeProvider>
+          <View>
+            <Text>Error loading fonts...</Text>
+          </View>
+        </ThemeProvider>
       </Provider>
     );
   }
@@ -52,13 +57,12 @@ export default function App() {
 
   return (
     <Provider store={store}>
-
-
-<NavigationContainer ref={navigationRef}>
-        {isAuthenticated ? <AppNavigator /> : <AuthStack />}
-      </NavigationContainer>
-      <Toast />
-
+      <ThemeProvider>
+        <NavigationContainer ref={navigationRef}>
+          {isAuthenticated ? <AppNavigator /> : <AuthStack />}
+        </NavigationContainer>
+        <Toast />
+      </ThemeProvider>
     </Provider>
   );
 }
