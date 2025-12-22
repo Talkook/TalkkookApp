@@ -132,7 +132,7 @@ const handleScroll = (event) => {
               {slides.map((slide) => (
                   <View key={slide.id} style={{ width: width }} className="flex-1">
                       {/* Text Content - Top */}
-                      <View className="px-8 pt-24 pb-6">
+                      <View className="px-8 pt-16 pb-6">
                           <Text
                               className="font-bold font-montserrat text-white"
                               style={{
@@ -156,7 +156,7 @@ const handleScroll = (event) => {
                       </View>
 
                       {/* Image Container - Bottom */}
-                      <View className="justify-center items-center w-full px-6 flex-[0.75] pt-12">
+                      <View className="justify-center items-center w-full px-6 flex-[0.75] pt-6">
                           <Image
                               source={slide.image}
                               style={{ width: width * responsiveSizes.imageWidth, height: height * responsiveSizes.imageHeight }}
