@@ -16,7 +16,7 @@ import { getThemeColors } from '../../theme/constants';
 
 
 import { superPublicMultipleData } from '../../store/superPublic/superPublicSlice';
-
+import PhoneNumberInput from '../../components/login/PhoneNumberInput';
 
 
 
@@ -281,14 +281,14 @@ const LoginScreen = () => {
                         </View>
 
                         {/* Phone Number Input Section */}
-                        {/* <PhoneNumberInput
+                        <PhoneNumberInput
                             countryCodes={countryCodes}
                             onPhoneChange={handlePhoneChange}
                             onCountryChange={handleCountryChange}
                             placeholder={showIsLoading && !hasBackendData ? "Loading..." : "212 345 6789"}
                             label="Phone Number"
                             disabled={showIsLoading && !hasBackendData}
-                        /> */}
+                        />
 
                         {/* Continue Button */}
                         <Button

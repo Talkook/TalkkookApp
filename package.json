@@ -23,6 +23,7 @@
     "expo-navigation-bar": "^5.0.10",
     "expo-status-bar": "~3.0.9",
     "jwt-decode": "^4.0.0",
+    "libphonenumber-js": "^1.12.33",
     "nativewind": "^4.2.1",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "react": "19.1.0",
