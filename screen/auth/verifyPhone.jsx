@@ -44,7 +44,7 @@ const VerifyPhoneScreen = () => {
     const [canResend, setCanResend] = useState(false);
 
     const phoneNumber = route.params?.phoneNumber || '';
-    const countryCode = route.params?.countryCode || '+98';
+    const countryCode = route.params?.countryCode || '+1';
     const formattedPhoneNumber = formatPhoneNumber(phoneNumber, countryCode);
 
     const isCodeComplete = code.length === CODE_LENGTH;
@@ -262,7 +262,7 @@ const VerifyPhoneScreen = () => {
                                                 shadowOffset: { width: 0, height: 10 },
                                                 shadowOpacity: 0.26,
                                                 shadowRadius: isSmall ? 10 : isLarge ? 14 : 12,
-                                                elevation: 6,
+                                                elevation: 0,
                                                 minHeight: isSmall ? 64 : isLarge ? 84 : 74,
                                             }}
                                         >
@@ -297,7 +297,7 @@ const VerifyPhoneScreen = () => {
                                                             numberOfLines={1}
                                                             ellipsizeMode="tail"
                                                             style={{ 
-                                                                fontSize: isSmall ? 13 : isLarge ? 17 : 15,
+                                                                fontSize: isSmall ? 15 : isLarge ? 19 : 17,
                                                                 marginTop: isSmall ? 4 : isLarge ? 8 : 6,
                                                                 color: theme.textOnGradient,
                                                                 letterSpacing: 0.5,
