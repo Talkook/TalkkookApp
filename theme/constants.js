@@ -102,6 +102,11 @@ export const lightTheme = {
   buttonEdit: '#D97706',                  // دکمه ویرایش
   buttonEditText: '#FFFFFF',              // متن دکمه ویرایش
   
+  // Disabled Button Colors
+  buttonDisabled: '#F3F4F6',              // پس‌زمینه دکمه غیرفعال
+  buttonDisabledText: '#9CA3AF',          // متن دکمه غیرفعال
+  buttonDisabledBorder: '#E5E7EB',        // حاشیه دکمه غیرفعال
+  
   // Link Colors
   link: '#0B5FFF',                        // لینک
   linkHover: '#0A46D4',                   // لینک در حالت هاور
@@ -270,6 +275,11 @@ export const darkTheme = {
   buttonEdit: '#F59E0B',                  // دکمه ویرایش
   buttonEditText: '#FFFFFF',              // متن دکمه ویرایش
   
+  // Disabled Button Colors
+  buttonDisabled: '#374151',              // پس‌زمینه دکمه غیرفعال
+  buttonDisabledText: '#6B7280',         // متن دکمه غیرفعال
+  buttonDisabledBorder: '#4B5563',        // حاشیه دکمه غیرفعال
+  
   // Link Colors
   link: '#60A5FA',                        // لینک
   linkHover: '#3B82F6',                   // لینک در حالت هاور
@@ -378,10 +388,20 @@ export const getThemeColor = (colorKey, isDark = false) => {
  * دریافت رنگ‌های دکمه بر اساس variant
  * @param {string} variant - نوع دکمه: 'normal' | 'next' | 'ok' | 'close' | 'delete' | 'edit'
  * @param {boolean} isDark - آیا تم دارک فعال است؟
+ * @param {boolean} disabled - آیا دکمه غیرفعال است؟
  * @returns {Object} { background, text, border }
  */
-export const getButtonColors = (variant = 'normal', isDark = false) => {
+export const getButtonColors = (variant = 'normal', isDark = false, disabled = false) => {
   const theme = isDark ? darkTheme : lightTheme;
+  
+  // اگر دکمه غیرفعال است، از رنگ‌های غیرفعال استفاده کن
+  if (disabled) {
+    return {
+      background: theme.buttonDisabled,
+      text: theme.buttonDisabledText,
+      border: theme.buttonDisabledBorder,
+    };
+  }
   
   const buttonMap = {
     normal: {

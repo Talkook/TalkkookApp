@@ -77,8 +77,11 @@ export const Button = ({
   const currentSize = sizeConfig[size] || sizeConfig.medium;
   const buttonText = text || defaultTexts[variant] || defaultTexts.normal;
 
-  // Get button colors from standardized theme system
-  const buttonColors = getButtonColors(variant, isDark);
+  // Check if button is disabled or loading
+  const isDisabled = disabled || loading;
+
+  // Get button colors from standardized theme system (pass disabled state)
+  const buttonColors = getButtonColors(variant, isDark, isDisabled);
 
   // Variant-specific styles with full theme support
   const getVariantStyles = () => {
@@ -110,11 +113,6 @@ export const Button = ({
   const finalTextColor = textColor || getTextColor();
   const iconColor = finalTextColor;
 
-  // Disabled styles
-  const disabledStyles = disabled || loading ? {
-    opacity: 0.5,
-  } : {};
-
   // Render icon
   const renderIcon = () => {
     if (!icon || loading) return null;
@@ -124,7 +122,6 @@ export const Button = ({
         name={icon} 
         size={currentSize.iconSize} 
         color={iconColor}
-        style={{ marginHorizontal: 4 }}
       />
     );
   };
@@ -136,34 +133,58 @@ export const Button = ({
       activeOpacity={0.7}
       style={[
         getVariantStyles(),
-        disabledStyles,
         style,
       ]}
       className={className}
     >
-      {loading && (
-        <ActivityIndicator 
-          size="small" 
-          color={iconColor} 
-          style={{ marginRight: icon && iconPosition === 'left' ? 8 : 0 }}
-        />
-      )}
-      
-      {icon && iconPosition === 'left' && !loading && renderIcon()}
-      
-      <Text
-        style={{
-          color: finalTextColor,
-          fontSize: currentSize.fontSize,
-          fontWeight: '600',
-          textAlign: 'center',
-        }}
-        className="font-semibold"
-      >
-        {buttonText}
-      </Text>
-      
-      {icon && iconPosition === 'right' && !loading && renderIcon()}
+      <View style={{ 
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        width: '100%',
+      }}>
+        {/* Left icon spacer - برای حفظ مرکزیت متن */}
+        <View style={{
+          width: (loading || (icon && iconPosition === 'left' && !loading)) ? currentSize.iconSize + 12 : 
+                 (icon && iconPosition === 'right' && !loading) ? currentSize.iconSize + 12 : 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          {(loading || (icon && iconPosition === 'left' && !loading)) && (
+            loading ? (
+              <ActivityIndicator 
+                size="small" 
+                color={iconColor}
+              />
+            ) : (
+              renderIcon()
+            )
+          )}
+        </View>
+        
+        {/* Center text */}
+        <Text
+          style={{
+            color: finalTextColor,
+            fontSize: currentSize.fontSize,
+            fontWeight: '600',
+            textAlign: 'center',
+          }}
+          className="font-semibold"
+        >
+          {buttonText}
+        </Text>
+        
+        {/* Right icon spacer - برای حفظ مرکزیت متن */}
+        <View style={{
+          width: (icon && iconPosition === 'right' && !loading) ? currentSize.iconSize + 12 : 
+                 (loading || (icon && iconPosition === 'left' && !loading)) ? currentSize.iconSize + 12 : 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          {icon && iconPosition === 'right' && !loading && renderIcon()}
+        </View>
+      </View>
     </TouchableOpacity>
   );
 };
