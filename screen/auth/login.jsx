@@ -12,7 +12,7 @@ import { useTheme } from '../../hooks/useTheme';
 import { useResponsiveSize } from '../../hooks/useResponsiveSize';
 import { Button } from '../../components/public/Button';
 import { ScreenWrapper } from '../../components/public/ScreenWrapper';
-import { palette } from '../../theme/constants';
+import { getThemeColors } from '../../theme/constants';
 
 
 import { superPublicMultipleData } from '../../store/superPublic/superPublicSlice';
@@ -79,6 +79,8 @@ const LoginScreen = () => {
     const [selectedCountry, setSelectedCountry] = useState(null);
     const [phoneDigits, setPhoneDigits] = useState('');
     const { isSmall, isLarge } = useResponsiveSize();
+    const { isDark } = useTheme();
+    const theme = getThemeColors(isDark);
 
     const { showPhoneSuffixes, showIsLoading } = useSelector(
         (state) => ({
@@ -161,9 +163,9 @@ const LoginScreen = () => {
                 {/* Gradient overlay - richer depth for readability */}
                 <LinearGradient
                     colors={[
-                        palette.primary,
-                        'rgba(10, 70, 212, 0.85)',
-                        'rgba(11, 27, 58, 0.92)',
+                        theme.gradientStart,
+                        theme.gradientMiddle,
+                        theme.gradientEnd,
                     ]}
                     locations={[0, 0.5, 1]}
                     className="flex-1"
@@ -185,8 +187,8 @@ const LoginScreen = () => {
                             <View className="flex-row items-center" style={{ marginBottom: isSmall ? 10 : isLarge ? 14 : 12 }}>
                                 <LinearGradient
                                     colors={[
-                                        'rgba(11, 95, 255, 0.52)', // align with background blue
-                                        'rgba(11, 95, 255, 0.32)',
+                                        theme.logoGradientStart,
+                                        theme.logoGradientEnd,
                                     ]}
                                     start={{ x: 0, y: 0 }}
                                     end={{ x: 1, y: 1 }}
@@ -194,7 +196,7 @@ const LoginScreen = () => {
                                         padding: isSmall ? 5 : isLarge ? 7 : 6,
                                         borderRadius: isSmall ? 30 : isLarge ? 38 : 34,
                                         marginRight: isSmall ? 10 : isLarge ? 14 : 12,
-                                        shadowColor: '#0B1B3A',
+                                        shadowColor: theme.shadowColor,
                                         shadowOffset: { width: 0, height: 6 },
                                         shadowOpacity: 0.28,
                                         shadowRadius: isSmall ? 12 : isLarge ? 16 : 14,
@@ -203,8 +205,8 @@ const LoginScreen = () => {
                                 >
                                     <LinearGradient
                                         colors={[
-                                            'rgba(255, 255, 255, 0.24)',
-                                            'rgba(11, 95, 255, 0.55)',
+                                            theme.logoInnerGradientStart,
+                                            theme.logoInnerGradientEnd,
                                         ]}
                                         start={{ x: 0, y: 0 }}
                                         end={{ x: 1, y: 1 }}
@@ -215,7 +217,7 @@ const LoginScreen = () => {
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             borderWidth: isSmall ? 1.3 : isLarge ? 1.7 : 1.5,
-                                            borderColor: 'rgba(255, 255, 255, 0.26)',
+                                            borderColor: theme.logoBorder,
                                         }}
                                     >
                                         <Image 
@@ -223,7 +225,7 @@ const LoginScreen = () => {
                                             style={{ 
                                                 width: isSmall ? 40 : isLarge ? 50 : 45, 
                                                 height: isSmall ? 40 : isLarge ? 50 : 45,
-                                                tintColor: '#FFFFFF',
+                                                tintColor: theme.textOnGradient,
                                             }}
                                             resizeMode="contain"
                                         />
@@ -235,7 +237,7 @@ const LoginScreen = () => {
                                         style={{ 
                                             fontFamily: 'DaysOne',
                                             fontSize: isSmall ? 20 : isLarge ? 28 : 26,
-                                            color: '#FFFFFF',
+                                            color: theme.textOnGradient,
                                             letterSpacing: isSmall ? 1.3 : isLarge ? 1.7 : 1.5,
                                         }}
                                     >
@@ -246,7 +248,7 @@ const LoginScreen = () => {
                                             style={{
                                                 width: isSmall ? 20 : isLarge ? 24 : 22,
                                                 height: isSmall ? 1.8 : isLarge ? 2.2 : 2,
-                                                backgroundColor: 'rgba(255, 255, 255, 0.75)',
+                                                backgroundColor: theme.overlayDark,
                                                 borderRadius: 999,
                                                 marginRight: isSmall ? 6 : isLarge ? 10 : 8,
                                             }}
@@ -255,7 +257,7 @@ const LoginScreen = () => {
                                             className="font-montserrat" 
                                             style={{ 
                                                 fontSize: isSmall ? 11 : isLarge ? 14 : 13,
-                                                color: palette.textSecondary,
+                                                color: theme.textSecondaryOnGradient,
                                             }}
                                         >
                                             Learn, chat, and grow with a global community
@@ -270,7 +272,7 @@ const LoginScreen = () => {
                                 style={{ 
                                     fontSize: isSmall ? 11 : isLarge ? 15 : 14,
                                     paddingRight: isSmall ? 42 : isLarge ? 54 : 48,
-                                    color: palette.textSecondary,
+                                    color: theme.textSecondaryOnGradient,
                                     lineHeight: isSmall ? 18 : isLarge ? 22 : 20,
                                 }}
                             >
@@ -301,23 +303,29 @@ const LoginScreen = () => {
 
                         {/* OR Divider */}
                         <View className="flex-row items-center" style={{ marginBottom: isSmall ? 28 : isLarge ? 36 : 32 }}>
-                            <View className="flex-1 bg-white/30" style={{ height: isSmall ? 1.3 : isLarge ? 1.7 : 1.5 }} />
+                            <View className="flex-1" style={{ height: isSmall ? 1.3 : isLarge ? 1.7 : 1.5, backgroundColor: theme.overlayMedium }} />
                             <View 
-                                className="bg-white/10 rounded-full border border-white/20" 
+                                className="rounded-full" 
                                 style={{ 
+                                    backgroundColor: theme.overlayLight,
+                                    borderWidth: 1,
+                                    borderColor: theme.overlayMedium,
                                     paddingHorizontal: isSmall ? 20 : isLarge ? 28 : 24,
                                     paddingVertical: isSmall ? 7 : isLarge ? 9 : 8,
                                     marginHorizontal: isSmall ? 10 : isLarge ? 14 : 12,
                                 }}
                             >
                                 <Text 
-                                    className="text-white/80 font-bold font-montserrat" 
-                                    style={{ fontSize: isSmall ? 11 : isLarge ? 15 : 14 }}
+                                    className="font-bold font-montserrat" 
+                                    style={{ 
+                                        fontSize: isSmall ? 11 : isLarge ? 15 : 14,
+                                        color: theme.overlayWhite,
+                                    }}
                                 >
                                     OR
                                 </Text>
                             </View>
-                            <View className="flex-1 bg-white/30" style={{ height: isSmall ? 1.3 : isLarge ? 1.7 : 1.5 }} />
+                            <View className="flex-1" style={{ height: isSmall ? 1.3 : isLarge ? 1.7 : 1.5, backgroundColor: theme.overlayMedium }} />
                         </View>
 
                         {/* Alternative Login Methods */}
@@ -331,10 +339,10 @@ const LoginScreen = () => {
                                         paddingVertical: isSmall ? 18 : isLarge ? 22 : 20,
                                         paddingHorizontal: isSmall ? 14 : isLarge ? 18 : 16,
                                         borderRadius: isSmall ? 14 : isLarge ? 18 : 16,
-                                        backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                                        backgroundColor: theme.overlayLight,
                                         borderWidth: isSmall ? 1.8 : isLarge ? 2.2 : 2,
-                                        borderColor: 'rgba(255, 255, 255, 0.5)',
-                                        shadowColor: 'rgba(255, 255, 255, 0.3)',
+                                        borderColor: theme.overlayMedium,
+                                        shadowColor: theme.shadowColorLight,
                                         shadowOffset: { width: 0, height: 4 },
                                         shadowOpacity: 0.3,
                                         shadowRadius: isSmall ? 7 : isLarge ? 9 : 8,
@@ -362,19 +370,19 @@ const LoginScreen = () => {
                                         />
                                     </LinearGradient>
                                     <Text 
-                                        className="text-white font-bold font-montserrat flex-1" 
+                                        className="font-bold font-montserrat flex-1" 
                                         numberOfLines={1}
                                         style={{ 
                                             fontSize: isSmall ? 11 : isLarge ? 15 : 14,
-                                            color: 'rgba(255, 255, 255, 1)',
+                                            color: theme.overlayWhite,
                                         }}
                                     >
                                         Email
                                     </Text>
                                     <Ionicons 
                                         name="chevron-forward" 
-                                            size={isSmall ? 16 : isLarge ? 20 : 18} 
-                                        color="rgba(255, 255, 255, 0.9)" 
+                                        size={isSmall ? 16 : isLarge ? 20 : 18} 
+                                        color={theme.overlayWhite} 
                                     />
                                 </TouchableOpacity>
 
@@ -385,10 +393,10 @@ const LoginScreen = () => {
                                         paddingVertical: isSmall ? 18 : isLarge ? 22 : 20,
                                         paddingHorizontal: isSmall ? 14 : isLarge ? 18 : 16,
                                         borderRadius: isSmall ? 14 : isLarge ? 18 : 16,
-                                        backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                                        backgroundColor: theme.overlayLight,
                                         borderWidth: isSmall ? 1.8 : isLarge ? 2.2 : 2,
-                                        borderColor: 'rgba(255, 255, 255, 0.5)',
-                                        shadowColor: 'rgba(255, 255, 255, 0.3)',
+                                        borderColor: theme.overlayMedium,
+                                        shadowColor: theme.shadowColorLight,
                                         shadowOffset: { width: 0, height: 4 },
                                         shadowOpacity: 0.3,
                                         shadowRadius: isSmall ? 7 : isLarge ? 9 : 8,
@@ -416,19 +424,19 @@ const LoginScreen = () => {
                                         />
                                     </LinearGradient>
                                     <Text 
-                                        className="text-white font-bold font-montserrat flex-1" 
+                                        className="font-bold font-montserrat flex-1" 
                                         numberOfLines={1}
                                         style={{ 
                                             fontSize: isSmall ? 11 : isLarge ? 15 : 14,
-                                            color: 'rgba(255, 255, 255, 1)',
+                                            color: theme.overlayWhite,
                                         }}
                                     >
                                         Google
                                     </Text>
                                     <Ionicons 
                                         name="chevron-forward" 
-                                            size={isSmall ? 16 : isLarge ? 20 : 18} 
-                                        color="rgba(255, 255, 255, 0.9)" 
+                                        size={isSmall ? 16 : isLarge ? 20 : 18} 
+                                        color={theme.overlayWhite} 
                                     />
                                 </TouchableOpacity>
                             </View>
@@ -442,10 +450,10 @@ const LoginScreen = () => {
                                         paddingVertical: isSmall ? 18 : isLarge ? 22 : 20,
                                         paddingHorizontal: isSmall ? 14 : isLarge ? 18 : 16,
                                         borderRadius: isSmall ? 14 : isLarge ? 18 : 16,
-                                        backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                                        backgroundColor: theme.overlayLight,
                                         borderWidth: isSmall ? 1.8 : isLarge ? 2.2 : 2,
-                                        borderColor: 'rgba(255, 255, 255, 0.5)',
-                                        shadowColor: 'rgba(255, 255, 255, 0.3)',
+                                        borderColor: theme.overlayMedium,
+                                        shadowColor: theme.shadowColorLight,
                                         shadowOffset: { width: 0, height: 4 },
                                         shadowOpacity: 0.3,
                                         shadowRadius: isSmall ? 7 : isLarge ? 9 : 8,
@@ -473,19 +481,19 @@ const LoginScreen = () => {
                                         />
                                     </LinearGradient>
                                     <Text 
-                                        className="text-white font-bold font-montserrat flex-1" 
+                                        className="font-bold font-montserrat flex-1" 
                                         numberOfLines={1}
                                         style={{ 
                                             fontSize: isSmall ? 11 : isLarge ? 15 : 14,
-                                            color: 'rgba(255, 255, 255, 1)',
+                                            color: theme.overlayWhite,
                                         }}
                                     >
                                         Apple
                                     </Text>
                                     <Ionicons 
                                         name="chevron-forward" 
-                                            size={isSmall ? 16 : isLarge ? 20 : 18} 
-                                        color="rgba(255, 255, 255, 0.9)" 
+                                        size={isSmall ? 16 : isLarge ? 20 : 18} 
+                                        color={theme.overlayWhite} 
                                     />
                                 </TouchableOpacity>
 
@@ -496,10 +504,10 @@ const LoginScreen = () => {
                                         paddingVertical: isSmall ? 18 : isLarge ? 22 : 20,
                                         paddingHorizontal: isSmall ? 14 : isLarge ? 18 : 16,
                                         borderRadius: isSmall ? 14 : isLarge ? 18 : 16,
-                                        backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                                        backgroundColor: theme.overlayLight,
                                         borderWidth: isSmall ? 1.8 : isLarge ? 2.2 : 2,
-                                        borderColor: 'rgba(255, 255, 255, 0.5)',
-                                        shadowColor: 'rgba(255, 255, 255, 0.3)',
+                                        borderColor: theme.overlayMedium,
+                                        shadowColor: theme.shadowColorLight,
                                         shadowOffset: { width: 0, height: 4 },
                                         shadowOpacity: 0.3,
                                         shadowRadius: isSmall ? 7 : isLarge ? 9 : 8,
@@ -527,19 +535,19 @@ const LoginScreen = () => {
                                         />
                                     </LinearGradient>
                                     <Text 
-                                        className="text-white font-bold font-montserrat flex-1" 
+                                        className="font-bold font-montserrat flex-1" 
                                         numberOfLines={1}
                                         style={{ 
                                             fontSize: isSmall ? 11 : isLarge ? 15 : 14,
-                                            color: 'rgba(255, 255, 255, 1)',
+                                            color: theme.overlayWhite,
                                         }}
                                     >
                                         Facebook
                                     </Text>
                                     <Ionicons 
                                         name="chevron-forward" 
-                                            size={isSmall ? 16 : isLarge ? 20 : 18} 
-                                        color="rgba(255, 255, 255, 0.9)" 
+                                        size={isSmall ? 16 : isLarge ? 20 : 18} 
+                                        color={theme.overlayWhite} 
                                     />
                                 </TouchableOpacity>
                             </View>
@@ -552,13 +560,13 @@ const LoginScreen = () => {
                                 style={{ 
                                     fontSize: isSmall ? 11 : isLarge ? 15 : 14,
                                     lineHeight: isSmall ? 18 : isLarge ? 22 : 20,
-                                    color: palette.textSecondary,
+                                    color: theme.textSecondaryOnGradient,
                                 }}
                             >
                                 By continuing, you agree to our{'\n'}
-                                <Text style={{ color: palette.textPrimary, fontWeight: '600' }}>Terms of Service</Text>
+                                <Text style={{ color: theme.textOnGradient, fontWeight: '600' }}>Terms of Service</Text>
                                 {' & '}
-                                <Text style={{ color: palette.textPrimary, fontWeight: '600' }}>Privacy Policy</Text>
+                                <Text style={{ color: theme.textOnGradient, fontWeight: '600' }}>Privacy Policy</Text>
                             </Text>
                         </View>
                     </View>

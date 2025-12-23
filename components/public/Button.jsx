@@ -2,6 +2,7 @@ import React from 'react';
 import { TouchableOpacity, Text, View, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../hooks/useTheme';
+import { getButtonColors } from '../../theme/constants';
 
 /**
  * Button Component - A versatile button with multiple variants and themes
@@ -76,6 +77,9 @@ export const Button = ({
   const currentSize = sizeConfig[size] || sizeConfig.medium;
   const buttonText = text || defaultTexts[variant] || defaultTexts.normal;
 
+  // Get button colors from standardized theme system
+  const buttonColors = getButtonColors(variant, isDark);
+
   // Variant-specific styles with full theme support
   const getVariantStyles = () => {
     const baseStyles = {
@@ -88,77 +92,18 @@ export const Button = ({
       paddingHorizontal: currentSize.paddingHorizontal,
     };
 
-    switch (variant) {
-      case 'normal':
-        // Normal button: white in light mode, blue-tinted gray in dark mode
-        return {
-          ...baseStyles,
-          backgroundColor: isDark ? '#1E3A5F' : '#FFFFFF', // Blue-tinted dark background
-          borderWidth: isDark ? 1.5 : 0,
-          borderColor: isDark ? '#2E4A6F' : 'transparent', // Blue-tinted border for better contrast
-        };
-      
-      case 'next':
-        // Next button: blue with theme variations
-        return {
-          ...baseStyles,
-          backgroundColor: isDark ? '#3B82F6' : '#2563EB',
-          borderWidth: 0,
-        };
-      
-      case 'ok':
-        // OK button: green with theme variations
-        return {
-          ...baseStyles,
-          backgroundColor: isDark ? '#10B981' : '#059669',
-          borderWidth: 0,
-        };
-      
-      case 'close':
-        // Close button: gray with theme variations
-        return {
-          ...baseStyles,
-          backgroundColor: isDark ? '#6B7280' : '#9CA3AF',
-          borderWidth: 0,
-        };
-      
-      case 'delete':
-        // Delete button: red with theme variations
-        return {
-          ...baseStyles,
-          backgroundColor: isDark ? '#EF4444' : '#DC2626',
-          borderWidth: 0,
-        };
-      
-      case 'edit':
-        // Edit button: orange with theme variations
-        return {
-          ...baseStyles,
-          backgroundColor: isDark ? '#F59E0B' : '#D97706',
-          borderWidth: 0,
-        };
-      
-      default:
-        return baseStyles;
-    }
+    // Use standardized button colors from theme
+    return {
+      ...baseStyles,
+      backgroundColor: buttonColors.background,
+      borderWidth: buttonColors.border === 'transparent' ? 0 : 1.5,
+      borderColor: buttonColors.border,
+    };
   };
 
   // Text color based on variant and theme - fully automatic
   const getTextColor = () => {
-    switch (variant) {
-      case 'normal':
-        // Normal button: primary blue in light mode, white in dark mode
-        return isDark ? '#F9FAFB' : '#0B5FFF'; // Using primary color from palette
-      case 'next':
-      case 'ok':
-      case 'close':
-      case 'delete':
-      case 'edit':
-        // All colored buttons: white text for contrast
-        return '#FFFFFF';
-      default:
-        return isDark ? '#F9FAFB' : '#111827';
-    }
+    return buttonColors.text;
   };
 
   // Icon color (same as text color)

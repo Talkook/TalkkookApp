@@ -7,7 +7,7 @@ import { useTheme } from '../../hooks/useTheme';
 import { useResponsiveSize } from '../../hooks/useResponsiveSize';
 import { Button } from '../../components/public/Button';
 import { ScreenWrapper } from '../../components/public/ScreenWrapper';
-import { palette } from '../../theme/constants';
+import { getThemeColors } from '../../theme/constants';
 
 const { width, height } = Dimensions.get('window');
 
@@ -22,6 +22,7 @@ const WelcomeScreen = () => {
   const navigation = useNavigation();
   const { isSmall, isLarge } = useResponsiveSize();
   const { isDark, toggleTheme } = useTheme();
+  const theme = getThemeColors(isDark);
 
 
 
@@ -76,7 +77,7 @@ const handleScroll = (event) => {
 
 
     return (
-      <ScreenWrapper backgroundColor={palette.primary}>
+      <ScreenWrapper backgroundColor={theme.primary}>
         <ImageBackground 
           source={BACKGROUND_IMAGE}
           className="flex-1"
@@ -85,9 +86,9 @@ const handleScroll = (event) => {
           {/* Gradient overlay - richer depth for readability */}
           <LinearGradient
               colors={[
-                  palette.primary,
-                  'rgba(10, 70, 212, 0.82)',
-                  'rgba(11, 27, 58, 0.92)',
+                  theme.gradientStart,
+                  theme.gradientMiddle,
+                  theme.gradientEnd,
               ]}
               locations={[0, 0.5, 1]}
               className="flex-1"
@@ -99,9 +100,10 @@ const handleScroll = (event) => {
                   <TouchableOpacity
                       onPress={toggleTheme}
                       activeOpacity={0.7}
-                      className="bg-white/20 dark:bg-gray-800/30 backdrop-blur-sm rounded-full p-3"
+                      className="backdrop-blur-sm rounded-full p-3"
                       style={{
-                          shadowColor: 'rgba(0, 0, 0, 0.2)',
+                          backgroundColor: theme.overlayLight,
+                          shadowColor: theme.shadowColor,
                           shadowOffset: { width: 0, height: 2 },
                           shadowOpacity: 0.3,
                           shadowRadius: 4,
@@ -111,7 +113,7 @@ const handleScroll = (event) => {
                       <Ionicons 
                           name={isDark ? 'sunny' : 'moon'} 
                           size={24} 
-                          color="#FFFFFF" 
+                          color={theme.textOnGradient} 
                       />
                   </TouchableOpacity>
               </View>
@@ -138,7 +140,7 @@ const handleScroll = (event) => {
                               style={{
                                   fontSize: isSmall ? 32 : isLarge ? 44 : 38,
                                   lineHeight: isSmall ? 40 : isLarge ? 54 : 46,
-                                  color: palette.textPrimary,
+                                  color: theme.textOnGradient,
                               }}
                           >
                               {slide.title}
@@ -148,7 +150,7 @@ const handleScroll = (event) => {
                               style={{
                                   fontSize: isSmall ? 15 : isLarge ? 19 : 17,
                                   lineHeight: isSmall ? 22 : isLarge ? 28 : 24,
-                                  color: palette.textSecondary,
+                                  color: theme.textSecondaryOnGradient,
                               }}
                           >
                               {slide.description}
@@ -194,7 +196,7 @@ const handleScroll = (event) => {
               <Ionicons 
                   name="chevron-back" 
                   size={isSmall ? 22 : 26} 
-                  color={palette.textSecondary} 
+                  color={theme.textSecondaryOnGradient} 
               />
               
               {/* Slide Indicators */}
@@ -208,7 +210,7 @@ const handleScroll = (event) => {
                                   : 'w-2'
                           }`}
                           style={{
-                              backgroundColor: index === currentSlide ? palette.indicatorActive : palette.indicatorInactive,
+                              backgroundColor: index === currentSlide ? theme.indicatorActive : theme.indicatorInactive,
                           }}
                       />
                   ))}
@@ -219,7 +221,7 @@ const handleScroll = (event) => {
               <Ionicons 
                   name="chevron-forward" 
                   size={isSmall ? 26 : 30} 
-                  color={palette.textSecondary} 
+                  color={theme.textSecondaryOnGradient} 
               />
           </View>
       </View>
