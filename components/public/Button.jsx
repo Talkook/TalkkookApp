@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, View, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 
 /**
  * Button Component - A versatile button with multiple variants and themes

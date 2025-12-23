@@ -10,8 +10,8 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { useTheme } from '../../hooks/useTheme';
 import { useResponsiveSize } from '../../hooks/useResponsiveSize';
-import { Button } from '../../components/Button';
-import { ScreenWrapper } from '../../components/ScreenWrapper';
+import { Button } from '../../components/public/Button';
+import { ScreenWrapper } from '../../components/public/ScreenWrapper';
 import { palette } from '../../theme/constants';
 
 

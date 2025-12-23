@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View } from 'react-native';
-import { loadThemeFromStorage } from '../store/theme/themeSlice';
+import { loadThemeFromStorage } from '../../store/theme/themeSlice';
 
 /**
  * ThemeProvider component that applies theme variant to root view

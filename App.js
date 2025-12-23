@@ -12,8 +12,8 @@ import AppNavigator from './navigation/mainNav';
 import AuthStack from './navigation/auth';
 import store from './store/store';
 import Toast from 'react-native-toast-message';
-import { ThemeProvider } from './components/ThemeProvider';
-
+import { ThemeProvider } from './components/public/ThemeProvider';
+0
 
 export default function App() {
 

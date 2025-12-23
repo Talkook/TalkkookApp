@@ -3,8 +3,8 @@ import { Platform, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as NavigationBar from 'expo-navigation-bar';
-import { useTheme } from '../hooks/useTheme';
-import { palette } from '../theme/constants';
+import { useTheme } from '../../hooks/useTheme';
+import { palette } from '../../theme/constants';
 
 /**
  * ScreenWrapper - A wrapper component for screens that handles:
