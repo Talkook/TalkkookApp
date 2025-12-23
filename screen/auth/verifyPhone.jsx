@@ -16,7 +16,7 @@ const BACKGROUND_IMAGE = require('../../assets/image/background/background-bg.pn
 const LOGO_IMAGE = require('../../assets/image/logo/bOnlinepngtools.png');
 
 // Timer constants
-const RESEND_TIMER_DURATION = 60; // seconds
+const RESEND_TIMER_DURATION = 3; // seconds
 const CODE_LENGTH = 5;
 
 

@@ -91,8 +91,10 @@ export const Button = ({
       alignItems: 'center',
       justifyContent: 'center',
       minHeight: currentSize.minHeight,
+      height: currentSize.minHeight,
       paddingVertical: currentSize.paddingVertical,
       paddingHorizontal: currentSize.paddingHorizontal,
+      overflow: 'hidden',
     };
 
     // Use standardized button colors from theme
