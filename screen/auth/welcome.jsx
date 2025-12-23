@@ -20,7 +20,7 @@ const WelcomeScreen = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const scrollViewRef = useRef(null);
   const navigation = useNavigation();
-  const responsiveSizes = useResponsiveSize('welcome');
+  const { isSmall, isLarge } = useResponsiveSize();
   const { isDark, toggleTheme } = useTheme();
 
 
@@ -136,8 +136,8 @@ const handleScroll = (event) => {
                           <Text
                               className="font-bold font-montserrat text-white"
                               style={{
-                                  fontSize: responsiveSizes.titleFontSize,
-                                  lineHeight: responsiveSizes.titleLineHeight,
+                                  fontSize: isSmall ? 32 : isLarge ? 44 : 38,
+                                  lineHeight: isSmall ? 40 : isLarge ? 54 : 46,
                                   color: palette.textPrimary,
                               }}
                           >
@@ -146,8 +146,8 @@ const handleScroll = (event) => {
                           <Text
                               className="font-semibold font-montserrat mt-3"
                               style={{
-                                  fontSize: responsiveSizes.descriptionFontSize,
-                                  lineHeight: responsiveSizes.descriptionLineHeight,
+                                  fontSize: isSmall ? 15 : isLarge ? 19 : 17,
+                                  lineHeight: isSmall ? 22 : isLarge ? 28 : 24,
                                   color: palette.textSecondary,
                               }}
                           >
@@ -159,7 +159,7 @@ const handleScroll = (event) => {
                       <View className="justify-center items-center w-full px-6 flex-[0.75] pt-6">
                           <Image
                               source={slide.image}
-                              style={{ width: width * responsiveSizes.imageWidth, height: height * responsiveSizes.imageHeight }}
+                              style={{ width: width * (isSmall ? 0.9 : 0.92), height: height * (isSmall ? 0.46 : 0.52) }}
                               resizeMode="contain"
                           />
                       </View>
@@ -193,7 +193,7 @@ const handleScroll = (event) => {
               {/* Left Swipe Hint */}
               <Ionicons 
                   name="chevron-back" 
-                  size={responsiveSizes.iconSize} 
+                  size={isSmall ? 22 : 26} 
                   color={palette.textSecondary} 
               />
               
@@ -218,7 +218,7 @@ const handleScroll = (event) => {
               {/* Right Swipe Hint */}
               <Ionicons 
                   name="chevron-forward" 
-                  size={responsiveSizes.forwardIconSize} 
+                  size={isSmall ? 26 : 30} 
                   color={palette.textSecondary} 
               />
           </View>

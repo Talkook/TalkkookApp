@@ -78,7 +78,7 @@ const LoginScreen = () => {
     const [parsedPhone, setParsedPhone] = useState(null);
     const [selectedCountry, setSelectedCountry] = useState(null);
     const [phoneDigits, setPhoneDigits] = useState('');
-    const responsiveSizes = useResponsiveSize('login');
+    const { isSmall, isLarge } = useResponsiveSize();
 
     const { showPhoneSuffixes, showIsLoading } = useSelector(
         (state) => ({
@@ -178,11 +178,11 @@ const LoginScreen = () => {
                     showsVerticalScrollIndicator={false}
                     keyboardShouldPersistTaps="handled"
                 >
-                    <View className="flex-1" style={{ paddingHorizontal: responsiveSizes.containerPaddingHorizontal, paddingTop: responsiveSizes.containerPaddingTop, paddingBottom: responsiveSizes.containerPaddingBottom }}>
+                    <View className="flex-1" style={{ paddingHorizontal: isSmall ? 28 : isLarge ? 36 : 32, paddingTop: isSmall ? 28 : isLarge ? 36 : 32, paddingBottom: isSmall ? 28 : isLarge ? 36 : 32 }}>
                         {/* Logo and Brand Section */}
-                        <View style={{ marginBottom: responsiveSizes.marginLarge }}>
+                        <View style={{ marginBottom: isSmall ? 28 : isLarge ? 36 : 32 }}>
                             {/* Inline brand row (single logo use) */}
-                            <View className="flex-row items-center" style={{ marginBottom: responsiveSizes.marginMedium }}>
+                            <View className="flex-row items-center" style={{ marginBottom: isSmall ? 10 : isLarge ? 14 : 12 }}>
                                 <LinearGradient
                                     colors={[
                                         'rgba(11, 95, 255, 0.52)', // align with background blue
@@ -191,13 +191,13 @@ const LoginScreen = () => {
                                     start={{ x: 0, y: 0 }}
                                     end={{ x: 1, y: 1 }}
                                     style={{
-                                        padding: responsiveSizes.logoPadding,
-                                        borderRadius: responsiveSizes.logoOuterBorderRadius,
-                                        marginRight: responsiveSizes.marginMedium,
+                                        padding: isSmall ? 5 : isLarge ? 7 : 6,
+                                        borderRadius: isSmall ? 30 : isLarge ? 38 : 34,
+                                        marginRight: isSmall ? 10 : isLarge ? 14 : 12,
                                         shadowColor: '#0B1B3A',
                                         shadowOffset: { width: 0, height: 6 },
                                         shadowOpacity: 0.28,
-                                        shadowRadius: responsiveSizes.logoShadowRadius,
+                                        shadowRadius: isSmall ? 12 : isLarge ? 16 : 14,
                                         elevation: 8,
                                     }}
                                 >
@@ -209,20 +209,20 @@ const LoginScreen = () => {
                                         start={{ x: 0, y: 0 }}
                                         end={{ x: 1, y: 1 }}
                                         style={{
-                                            width: responsiveSizes.logoContainerSize,
-                                            height: responsiveSizes.logoContainerSize,
-                                            borderRadius: responsiveSizes.logoBorderRadius,
+                                            width: isSmall ? 54 : isLarge ? 66 : 60,
+                                            height: isSmall ? 54 : isLarge ? 66 : 60,
+                                            borderRadius: isSmall ? 27 : isLarge ? 33 : 30,
                                             alignItems: 'center',
                                             justifyContent: 'center',
-                                            borderWidth: responsiveSizes.logoBorderWidth,
+                                            borderWidth: isSmall ? 1.3 : isLarge ? 1.7 : 1.5,
                                             borderColor: 'rgba(255, 255, 255, 0.26)',
                                         }}
                                     >
                                         <Image 
                                             source={LOGO_IMAGE}
                                             style={{ 
-                                                width: responsiveSizes.logoImageSize, 
-                                                height: responsiveSizes.logoImageSize,
+                                                width: isSmall ? 40 : isLarge ? 50 : 45, 
+                                                height: isSmall ? 40 : isLarge ? 50 : 45,
                                                 tintColor: '#FFFFFF',
                                             }}
                                             resizeMode="contain"
@@ -234,27 +234,27 @@ const LoginScreen = () => {
                                     <Text 
                                         style={{ 
                                             fontFamily: 'DaysOne',
-                                            fontSize: responsiveSizes.brandFontSize,
+                                            fontSize: isSmall ? 20 : isLarge ? 28 : 26,
                                             color: '#FFFFFF',
-                                            letterSpacing: responsiveSizes.brandLetterSpacing,
+                                            letterSpacing: isSmall ? 1.3 : isLarge ? 1.7 : 1.5,
                                         }}
                                     >
                                         TALKOOK
                                     </Text>
-                                    <View className="flex-row items-center" style={{ marginTop: responsiveSizes.marginTopSmall }}>
+                                    <View className="flex-row items-center" style={{ marginTop: isSmall ? 6 : isLarge ? 10 : 8 }}>
                                         <View 
                                             style={{
-                                                width: responsiveSizes.brandLineWidth,
-                                                height: responsiveSizes.brandLineHeight,
+                                                width: isSmall ? 20 : isLarge ? 24 : 22,
+                                                height: isSmall ? 1.8 : isLarge ? 2.2 : 2,
                                                 backgroundColor: 'rgba(255, 255, 255, 0.75)',
                                                 borderRadius: 999,
-                                                marginRight: responsiveSizes.marginSmall,
+                                                marginRight: isSmall ? 6 : isLarge ? 10 : 8,
                                             }}
                                         />
                                         <Text 
                                             className="font-montserrat" 
                                             style={{ 
-                                                fontSize: responsiveSizes.brandSubtitleFontSize,
+                                                fontSize: isSmall ? 11 : isLarge ? 14 : 13,
                                                 color: palette.textSecondary,
                                             }}
                                         >
@@ -268,10 +268,10 @@ const LoginScreen = () => {
                             <Text 
                                 className="font-montserrat" 
                                 style={{ 
-                                    fontSize: responsiveSizes.subtitleFontSize,
-                                    paddingRight: responsiveSizes.subtitlePaddingRight,
+                                    fontSize: isSmall ? 11 : isLarge ? 15 : 14,
+                                    paddingRight: isSmall ? 42 : isLarge ? 54 : 48,
                                     color: palette.textSecondary,
-                                    lineHeight: responsiveSizes.subtitleLineHeight,
+                                    lineHeight: isSmall ? 18 : isLarge ? 22 : 20,
                                 }}
                             >
                                 Start your language learning journey
@@ -289,53 +289,55 @@ const LoginScreen = () => {
                         /> */}
 
                         {/* Continue Button */}
-                        {/* <PrimaryButton
-                            title="Send OTP Message"
+                        <Button
+                            variant="normal"
+                            text="Send OTP Message"
                             disabled={!isValidPhone || (showIsLoading && !hasBackendData)}
+                            loading={showIsLoading && !hasBackendData}
                             onPress={handleContinuePress}
-                            primaryColor={palette.primary}
-                            style={{ marginBottom: responsiveSizes.marginLarge }}
-                        /> */}
+                            style={{ marginBottom: isSmall ? 28 : isLarge ? 36 : 32, width: '100%' }}
+                            forceTheme="light"
+                        />
 
                         {/* OR Divider */}
-                        <View className="flex-row items-center" style={{ marginBottom: responsiveSizes.marginLarge }}>
-                            <View className="flex-1 bg-white/30" style={{ height: responsiveSizes.dividerHeight }} />
+                        <View className="flex-row items-center" style={{ marginBottom: isSmall ? 28 : isLarge ? 36 : 32 }}>
+                            <View className="flex-1 bg-white/30" style={{ height: isSmall ? 1.3 : isLarge ? 1.7 : 1.5 }} />
                             <View 
                                 className="bg-white/10 rounded-full border border-white/20" 
                                 style={{ 
-                                    paddingHorizontal: responsiveSizes.dividerPaddingHorizontal,
-                                    paddingVertical: responsiveSizes.dividerPaddingVertical,
-                                    marginHorizontal: responsiveSizes.dividerMarginHorizontal,
+                                    paddingHorizontal: isSmall ? 20 : isLarge ? 28 : 24,
+                                    paddingVertical: isSmall ? 7 : isLarge ? 9 : 8,
+                                    marginHorizontal: isSmall ? 10 : isLarge ? 14 : 12,
                                 }}
                             >
                                 <Text 
                                     className="text-white/80 font-bold font-montserrat" 
-                                    style={{ fontSize: responsiveSizes.dividerFontSize }}
+                                    style={{ fontSize: isSmall ? 11 : isLarge ? 15 : 14 }}
                                 >
                                     OR
                                 </Text>
                             </View>
-                            <View className="flex-1 bg-white/30" style={{ height: responsiveSizes.dividerHeight }} />
+                            <View className="flex-1 bg-white/30" style={{ height: isSmall ? 1.3 : isLarge ? 1.7 : 1.5 }} />
                         </View>
 
                         {/* Alternative Login Methods */}
-                        <View style={{ gap: responsiveSizes.gapMedium }}>
+                        <View style={{ gap: isSmall ? 14 : isLarge ? 18 : 16 }}>
                             {/* Top Row - Email and Google */}
-                            <View style={{ flexDirection: 'row', gap: responsiveSizes.gapSmall }}>
+                            <View style={{ flexDirection: 'row', gap: isSmall ? 10 : isLarge ? 14 : 12 }}>
                                 {/* Email Button */}
                                 <TouchableOpacity
                                     activeOpacity={0.85}
                                     style={{
-                                        paddingVertical: responsiveSizes.buttonPaddingVertical,
-                                        paddingHorizontal: responsiveSizes.buttonPaddingHorizontal,
-                                        borderRadius: responsiveSizes.buttonBorderRadius,
+                                        paddingVertical: isSmall ? 18 : isLarge ? 22 : 20,
+                                        paddingHorizontal: isSmall ? 14 : isLarge ? 18 : 16,
+                                        borderRadius: isSmall ? 14 : isLarge ? 18 : 16,
                                         backgroundColor: 'rgba(255, 255, 255, 0.25)',
-                                        borderWidth: responsiveSizes.buttonBorderWidth,
+                                        borderWidth: isSmall ? 1.8 : isLarge ? 2.2 : 2,
                                         borderColor: 'rgba(255, 255, 255, 0.5)',
                                         shadowColor: 'rgba(255, 255, 255, 0.3)',
                                         shadowOffset: { width: 0, height: 4 },
                                         shadowOpacity: 0.3,
-                                        shadowRadius: responsiveSizes.buttonShadowRadius,
+                                        shadowRadius: isSmall ? 7 : isLarge ? 9 : 8,
                                         elevation: 4,
                                         flex: 1,
                                         flexDirection: 'row',
@@ -348,14 +350,14 @@ const LoginScreen = () => {
                                         start={{ x: 0, y: 0 }}
                                         end={{ x: 1, y: 1 }}
                                         style={{
-                                            borderRadius: responsiveSizes.buttonIconBorderRadius,
-                                            padding: responsiveSizes.buttonIconPadding,
-                                            marginRight: responsiveSizes.marginSmall,
+                                            borderRadius: isSmall ? 10 : isLarge ? 14 : 12,
+                                            padding: isSmall ? 7 : isLarge ? 9 : 8,
+                                            marginRight: isSmall ? 6 : isLarge ? 10 : 8,
                                         }}
                                     >
                                         <Ionicons 
                                             name="mail" 
-                                            size={responsiveSizes.buttonIconSize} 
+                                            size={isSmall ? 18 : isLarge ? 22 : 20} 
                                             color="#FFFFFF" 
                                         />
                                     </LinearGradient>
@@ -363,7 +365,7 @@ const LoginScreen = () => {
                                         className="text-white font-bold font-montserrat flex-1" 
                                         numberOfLines={1}
                                         style={{ 
-                                            fontSize: responsiveSizes.buttonFontSize,
+                                            fontSize: isSmall ? 11 : isLarge ? 15 : 14,
                                             color: 'rgba(255, 255, 255, 1)',
                                         }}
                                     >
@@ -371,7 +373,7 @@ const LoginScreen = () => {
                                     </Text>
                                     <Ionicons 
                                         name="chevron-forward" 
-                                        size={responsiveSizes.buttonChevronSize} 
+                                            size={isSmall ? 16 : isLarge ? 20 : 18} 
                                         color="rgba(255, 255, 255, 0.9)" 
                                     />
                                 </TouchableOpacity>
@@ -380,16 +382,16 @@ const LoginScreen = () => {
                                 <TouchableOpacity
                                     activeOpacity={0.85}
                                     style={{
-                                        paddingVertical: responsiveSizes.buttonPaddingVertical,
-                                        paddingHorizontal: responsiveSizes.buttonPaddingHorizontal,
-                                        borderRadius: responsiveSizes.buttonBorderRadius,
+                                        paddingVertical: isSmall ? 18 : isLarge ? 22 : 20,
+                                        paddingHorizontal: isSmall ? 14 : isLarge ? 18 : 16,
+                                        borderRadius: isSmall ? 14 : isLarge ? 18 : 16,
                                         backgroundColor: 'rgba(255, 255, 255, 0.25)',
-                                        borderWidth: responsiveSizes.buttonBorderWidth,
+                                        borderWidth: isSmall ? 1.8 : isLarge ? 2.2 : 2,
                                         borderColor: 'rgba(255, 255, 255, 0.5)',
                                         shadowColor: 'rgba(255, 255, 255, 0.3)',
                                         shadowOffset: { width: 0, height: 4 },
                                         shadowOpacity: 0.3,
-                                        shadowRadius: responsiveSizes.buttonShadowRadius,
+                                        shadowRadius: isSmall ? 7 : isLarge ? 9 : 8,
                                         elevation: 4,
                                         flex: 1,
                                         flexDirection: 'row',
@@ -402,14 +404,14 @@ const LoginScreen = () => {
                                         start={{ x: 0, y: 0 }}
                                         end={{ x: 1, y: 1 }}
                                         style={{
-                                            borderRadius: responsiveSizes.buttonIconBorderRadius,
-                                            padding: responsiveSizes.buttonIconPadding,
-                                            marginRight: responsiveSizes.marginSmall,
+                                            borderRadius: isSmall ? 10 : isLarge ? 14 : 12,
+                                            padding: isSmall ? 7 : isLarge ? 9 : 8,
+                                            marginRight: isSmall ? 6 : isLarge ? 10 : 8,
                                         }}
                                     >
                                         <Ionicons 
                                             name="logo-google" 
-                                            size={responsiveSizes.buttonIconSize} 
+                                            size={isSmall ? 18 : isLarge ? 22 : 20} 
                                             color="#FFFFFF" 
                                         />
                                     </LinearGradient>
@@ -417,7 +419,7 @@ const LoginScreen = () => {
                                         className="text-white font-bold font-montserrat flex-1" 
                                         numberOfLines={1}
                                         style={{ 
-                                            fontSize: responsiveSizes.buttonFontSize,
+                                            fontSize: isSmall ? 11 : isLarge ? 15 : 14,
                                             color: 'rgba(255, 255, 255, 1)',
                                         }}
                                     >
@@ -425,28 +427,28 @@ const LoginScreen = () => {
                                     </Text>
                                     <Ionicons 
                                         name="chevron-forward" 
-                                        size={responsiveSizes.buttonChevronSize} 
+                                            size={isSmall ? 16 : isLarge ? 20 : 18} 
                                         color="rgba(255, 255, 255, 0.9)" 
                                     />
                                 </TouchableOpacity>
                             </View>
 
                             {/* Bottom Row - Apple and Facebook */}
-                            <View style={{ flexDirection: 'row', gap: responsiveSizes.gapSmall }}>
+                            <View style={{ flexDirection: 'row', gap: isSmall ? 10 : isLarge ? 14 : 12 }}>
                                 {/* Apple Button */}
                                 <TouchableOpacity
                                     activeOpacity={0.85}
                                     style={{
-                                        paddingVertical: responsiveSizes.buttonPaddingVertical,
-                                        paddingHorizontal: responsiveSizes.buttonPaddingHorizontal,
-                                        borderRadius: responsiveSizes.buttonBorderRadius,
+                                        paddingVertical: isSmall ? 18 : isLarge ? 22 : 20,
+                                        paddingHorizontal: isSmall ? 14 : isLarge ? 18 : 16,
+                                        borderRadius: isSmall ? 14 : isLarge ? 18 : 16,
                                         backgroundColor: 'rgba(255, 255, 255, 0.25)',
-                                        borderWidth: responsiveSizes.buttonBorderWidth,
+                                        borderWidth: isSmall ? 1.8 : isLarge ? 2.2 : 2,
                                         borderColor: 'rgba(255, 255, 255, 0.5)',
                                         shadowColor: 'rgba(255, 255, 255, 0.3)',
                                         shadowOffset: { width: 0, height: 4 },
                                         shadowOpacity: 0.3,
-                                        shadowRadius: responsiveSizes.buttonShadowRadius,
+                                        shadowRadius: isSmall ? 7 : isLarge ? 9 : 8,
                                         elevation: 4,
                                         flex: 1,
                                         flexDirection: 'row',
@@ -459,14 +461,14 @@ const LoginScreen = () => {
                                         start={{ x: 0, y: 0 }}
                                         end={{ x: 1, y: 1 }}
                                         style={{
-                                            borderRadius: responsiveSizes.buttonIconBorderRadius,
-                                            padding: responsiveSizes.buttonIconPadding,
-                                            marginRight: responsiveSizes.marginSmall,
+                                            borderRadius: isSmall ? 10 : isLarge ? 14 : 12,
+                                            padding: isSmall ? 7 : isLarge ? 9 : 8,
+                                            marginRight: isSmall ? 6 : isLarge ? 10 : 8,
                                         }}
                                     >
                                         <Ionicons 
                                             name="logo-apple" 
-                                            size={responsiveSizes.buttonIconSize} 
+                                            size={isSmall ? 18 : isLarge ? 22 : 20} 
                                             color="#FFFFFF" 
                                         />
                                     </LinearGradient>
@@ -474,7 +476,7 @@ const LoginScreen = () => {
                                         className="text-white font-bold font-montserrat flex-1" 
                                         numberOfLines={1}
                                         style={{ 
-                                            fontSize: responsiveSizes.buttonFontSize,
+                                            fontSize: isSmall ? 11 : isLarge ? 15 : 14,
                                             color: 'rgba(255, 255, 255, 1)',
                                         }}
                                     >
@@ -482,7 +484,7 @@ const LoginScreen = () => {
                                     </Text>
                                     <Ionicons 
                                         name="chevron-forward" 
-                                        size={responsiveSizes.buttonChevronSize} 
+                                            size={isSmall ? 16 : isLarge ? 20 : 18} 
                                         color="rgba(255, 255, 255, 0.9)" 
                                     />
                                 </TouchableOpacity>
@@ -491,16 +493,16 @@ const LoginScreen = () => {
                                 <TouchableOpacity
                                     activeOpacity={0.85}
                                     style={{
-                                        paddingVertical: responsiveSizes.buttonPaddingVertical,
-                                        paddingHorizontal: responsiveSizes.buttonPaddingHorizontal,
-                                        borderRadius: responsiveSizes.buttonBorderRadius,
+                                        paddingVertical: isSmall ? 18 : isLarge ? 22 : 20,
+                                        paddingHorizontal: isSmall ? 14 : isLarge ? 18 : 16,
+                                        borderRadius: isSmall ? 14 : isLarge ? 18 : 16,
                                         backgroundColor: 'rgba(255, 255, 255, 0.25)',
-                                        borderWidth: responsiveSizes.buttonBorderWidth,
+                                        borderWidth: isSmall ? 1.8 : isLarge ? 2.2 : 2,
                                         borderColor: 'rgba(255, 255, 255, 0.5)',
                                         shadowColor: 'rgba(255, 255, 255, 0.3)',
                                         shadowOffset: { width: 0, height: 4 },
                                         shadowOpacity: 0.3,
-                                        shadowRadius: responsiveSizes.buttonShadowRadius,
+                                        shadowRadius: isSmall ? 7 : isLarge ? 9 : 8,
                                         elevation: 4,
                                         flex: 1,
                                         flexDirection: 'row',
@@ -513,14 +515,14 @@ const LoginScreen = () => {
                                         start={{ x: 0, y: 0 }}
                                         end={{ x: 1, y: 1 }}
                                         style={{
-                                            borderRadius: responsiveSizes.buttonIconBorderRadius,
-                                            padding: responsiveSizes.buttonIconPadding,
-                                            marginRight: responsiveSizes.marginSmall,
+                                            borderRadius: isSmall ? 10 : isLarge ? 14 : 12,
+                                            padding: isSmall ? 7 : isLarge ? 9 : 8,
+                                            marginRight: isSmall ? 6 : isLarge ? 10 : 8,
                                         }}
                                     >
                                         <Ionicons 
                                             name="logo-facebook" 
-                                            size={responsiveSizes.buttonIconSize} 
+                                            size={isSmall ? 18 : isLarge ? 22 : 20} 
                                             color="#FFFFFF" 
                                         />
                                     </LinearGradient>
@@ -528,7 +530,7 @@ const LoginScreen = () => {
                                         className="text-white font-bold font-montserrat flex-1" 
                                         numberOfLines={1}
                                         style={{ 
-                                            fontSize: responsiveSizes.buttonFontSize,
+                                            fontSize: isSmall ? 11 : isLarge ? 15 : 14,
                                             color: 'rgba(255, 255, 255, 1)',
                                         }}
                                     >
@@ -536,7 +538,7 @@ const LoginScreen = () => {
                                     </Text>
                                     <Ionicons 
                                         name="chevron-forward" 
-                                        size={responsiveSizes.buttonChevronSize} 
+                                            size={isSmall ? 16 : isLarge ? 20 : 18} 
                                         color="rgba(255, 255, 255, 0.9)" 
                                     />
                                 </TouchableOpacity>
@@ -544,12 +546,12 @@ const LoginScreen = () => {
                         </View>
 
                         {/* Footer Text */}
-                        <View className="mt-auto" style={{ paddingTop: responsiveSizes.footerPaddingTop }}>
+                        <View className="mt-auto" style={{ paddingTop: isSmall ? 28 : isLarge ? 36 : 32 }}>
                             <Text 
                                 className="text-center font-montserrat" 
                                 style={{ 
-                                    fontSize: responsiveSizes.footerFontSize,
-                                    lineHeight: responsiveSizes.footerLineHeight,
+                                    fontSize: isSmall ? 11 : isLarge ? 15 : 14,
+                                    lineHeight: isSmall ? 18 : isLarge ? 22 : 20,
                                     color: palette.textSecondary,
                                 }}
                             >
