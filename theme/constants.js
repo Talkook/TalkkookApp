@@ -150,6 +150,8 @@ export const lightTheme = {
   gradientStart: '#0B5FFF',                // شروع گرادیان
   gradientMiddle: 'rgba(10, 70, 212, 0.85)', // وسط گرادیان
   gradientEnd: 'rgba(11, 27, 58, 0.92)',   // پایان گرادیان
+
+  navBarBackgroundColor: 'rgba(7, 14, 27, 0.92)', // پس‌زمینه ناوبری
   
   // Text on Gradient Backgrounds
   textOnGradient: '#F8FAFC',              // متن روی گرادیان
@@ -316,6 +318,8 @@ export const darkTheme = {
   gradientStart: '#0A46D4',                // شروع گرادیان
   gradientMiddle: 'rgba(10, 70, 212, 0.95)', // وسط گرادیان
   gradientEnd: 'rgba(11, 27, 58, 0.98)',   // پایان گرادیان
+  
+  navBarBackgroundColor: 'rgba(7, 14, 27, 0.95)', // پس‌زمینه ناوبری
   
   // Text on Gradient Backgrounds
   textOnGradient: '#F8FAFC',              // متن روی گرادیان

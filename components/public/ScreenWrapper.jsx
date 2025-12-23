@@ -69,7 +69,7 @@ export const ScreenWrapper = ({
             left: 0,
             right: 0,
             height: insets.bottom,
-            backgroundColor: theme.gradientEnd,
+            backgroundColor: theme.navBarBackgroundColor,
           }}
         />
       )}
