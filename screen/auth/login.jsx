@@ -1,6 +1,3 @@
-// ============================================
-// 📚 React Libraries
-// ============================================
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Text, View, TouchableOpacity, ImageBackground, Dimensions, KeyboardAvoidingView, Platform, ScrollView, StatusBar, Image, BackHandler, Modal, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';

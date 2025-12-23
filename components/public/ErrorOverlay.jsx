@@ -51,8 +51,6 @@ const ErrorOverlay = () => {
 
   useEffect(() => {
     if (errorStatesPhoneSuffixesGet && messagesPhoneSuffixesGet) {
-
-        console.log(messagesPhoneSuffixesGet)
       showErrorToast(messagesPhoneSuffixesGet);
     }
   }, [errorStatesPhoneSuffixesGet, messagesPhoneSuffixesGet]);
