@@ -294,7 +294,7 @@ const LoginScreen = () => {
                             disabled={!isValidPhone || (showIsLoading && !hasBackendData)}
                             loading={showIsLoading && !hasBackendData}
                             onPress={handleContinuePress}
-                            style={{ marginBottom: isSmall ? 28 : isLarge ? 36 : 32, width: '100%' }}
+                            style={{ marginBottom: isSmall ? 28 : isLarge ? 36 : 32, width: '100%' ,minHeight: isSmall ? 52 : isLarge ? 60 : 56}}
                             forceTheme="light"
                         />
 

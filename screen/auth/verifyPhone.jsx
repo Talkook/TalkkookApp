@@ -415,7 +415,7 @@ const VerifyPhoneScreen = () => {
                                     onPress={handleVerifyPress}
                                     icon="checkmark"
                                     iconPosition="left"
-                                    style={{ marginBottom: isSmall ? 20 : isLarge ? 28 : 24, width: '100%' }}
+                                    style={{ marginBottom: isSmall ? 20 : isLarge ? 28 : 24, width: '100%' ,minHeight: isSmall ? 52 : isLarge ? 60 : 56 }}
                                     forceTheme="light"
                                 />
 
