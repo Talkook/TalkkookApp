@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, Modal, TouchableOpacity, FlatList, Dimensions } from 'react-native';
+import React, { useState, useMemo, useEffect } from 'react';
+import { View, Text, Modal, TouchableOpacity, FlatList, Dimensions, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useResponsiveSize } from '../../hooks/useResponsiveSize';
 import { useTheme } from '../../hooks/useTheme';
@@ -45,9 +45,35 @@ const CountryPickerModal = ({
     const { isDark } = useTheme();
     const theme = getThemeColors(isDark);
 
+    // State for search filter
+    const [searchQuery, setSearchQuery] = useState('');
+
     // استفاده از props یا رنگ پیش‌فرض از theme
     const finalSelectedBgColor = selectedItemBackgroundColor || theme.selected;
     const finalSelectedTextColor = selectedItemTextColor || theme.selectedText;
+
+    // Filter countries based on search query
+    const filteredCountries = useMemo(() => {
+        if (!searchQuery.trim()) {
+            return countryCodes;
+        }
+        const query = searchQuery.toLowerCase().trim();
+        return countryCodes.filter((item) => {
+            const countryName = (item.country || '').toLowerCase();
+            const countryCode = (item.code || '').toLowerCase();
+            const countryNameAlt = (item.name || '').toLowerCase();
+            return countryName.includes(query) || 
+                   countryCode.includes(query) || 
+                   countryNameAlt.includes(query);
+        });
+    }, [countryCodes, searchQuery]);
+
+    // Reset search when modal closes
+    useEffect(() => {
+        if (!visible) {
+            setSearchQuery('');
+        }
+    }, [visible]);
 
     const handleSelectCountry = (country) => {
         if (onSelectCountry) {
@@ -91,7 +117,7 @@ const CountryPickerModal = ({
                         }}
                     >
                         <Text
-                            className="font-bold font-montserrat"
+                            className="font-bold font-montserrat flex-1"
                             style={{ 
                                 fontSize: isSmall ? 16 : isLarge ? 22 : 20,
                                 color: theme.textPrimary,
@@ -115,9 +141,62 @@ const CountryPickerModal = ({
                         </TouchableOpacity>
                     </View>
 
+                    {/* Search Input */}
+                    <View
+                        style={{
+                            paddingHorizontal: isSmall ? 20 : isLarge ? 28 : 24,
+                            paddingVertical: isSmall ? 12 : isLarge ? 16 : 14,
+                            borderBottomWidth: 1,
+                            borderBottomColor: theme.borderLight,
+                        }}
+                    >
+                        <View
+                            className="flex-row items-center"
+                            style={{
+                                backgroundColor: theme.inputBackground || theme.buttonDefault,
+                                borderRadius: isSmall ? 10 : isLarge ? 14 : 12,
+                                paddingHorizontal: isSmall ? 12 : isLarge ? 16 : 14,
+                                paddingVertical: isSmall ? 10 : isLarge ? 14 : 12,
+                            }}
+                        >
+                            <Ionicons
+                                name="search"
+                                size={isSmall ? 18 : isLarge ? 24 : 20}
+                                color={theme.textSecondary}
+                                style={{ marginRight: isSmall ? 8 : isLarge ? 12 : 10 }}
+                            />
+                            <TextInput
+                                placeholder="Search country..."
+                                placeholderTextColor={theme.textSecondary}
+                                value={searchQuery}
+                                onChangeText={setSearchQuery}
+                                style={{
+                                    flex: 1,
+                                    fontSize: isSmall ? 14 : isLarge ? 18 : 16,
+                                    color: theme.textPrimary,
+                                    fontFamily: 'Montserrat',
+                                }}
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                            />
+                            {searchQuery.length > 0 && (
+                                <TouchableOpacity
+                                    onPress={() => setSearchQuery('')}
+                                    style={{ marginLeft: isSmall ? 8 : isLarge ? 12 : 10 }}
+                                >
+                                    <Ionicons
+                                        name="close-circle"
+                                        size={isSmall ? 18 : isLarge ? 24 : 20}
+                                        color={theme.textSecondary}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    </View>
+
                     {/* Country List */}
                     <FlatList
-                        data={countryCodes}
+                        data={filteredCountries}
                         keyExtractor={(item) => item.name || item.id?.toString() || item.code}
                         showsVerticalScrollIndicator={false}
                         renderItem={({ item }) => {
