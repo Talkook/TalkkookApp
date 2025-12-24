@@ -32,8 +32,13 @@ export const ScreenWrapper = ({
   // Use provided backgroundColor or theme primary
   const finalBackgroundColor = backgroundColor || theme.primary;
 
-  // Determine status bar style
-  const finalStatusBarStyle = statusBarStyle || (isDark ? 'dark' : 'light'); // "auto"
+  // Determine status bar style based on theme
+  // 'light' = light content (white text/icons) for dark backgrounds
+  // 'dark' = dark content (black text/icons) for light backgrounds
+  // For dark theme: use 'light' (white text on dark background)
+  // For light theme: use 'dark' (black text on light background)
+  const finalStatusBarStyle = statusBarStyle || (isDark ? 'dark' : 'light');
+  const finalStatusBarStyle2 = isDark ? 'light' : 'dark';
 
   // Get navigation bar background color based on theme
   // For light theme, use a light color; for dark theme, use a dark color
@@ -74,8 +79,30 @@ export const ScreenWrapper = ({
   }, [insets.bottom, navBarBgColor, navBarButtonStyle, isDark]);
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: finalBackgroundColor }}>
-      <StatusBar style={finalStatusBarStyle} translucent={Platform.OS === 'android'} />
+    <SafeAreaView className="flex-1">
+      <StatusBar 
+        translucent={Platform.OS === 'android'} 
+        backgroundColor={Platform.OS === 'android' && insets.top === 0 ? finalBackgroundColor : undefined}
+      />
+      
+      {/* Status Bar Overlay برای edge-to-edge (Android و iOS) */}
+      {/* این overlay برای دستگاه‌هایی که edge-to-edge فعال دارند استفاده می‌شود */}
+      {/* برای Android: فقط وقتی insets.top > 0 باشد (edge-to-edge فعال) */}
+      {/* برای iOS: وقتی insets.top > 0 باشد (همیشه در حالت عادی) */}
+      {insets.top > 0 && (
+        <View 
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: insets.top,
+            backgroundColor: navBarBgColor,
+            zIndex: 1000,
+          }}
+        />
+      )}
+      
       {children}
       
       {/* Navigation Bar Overlay برای Android با edge-to-edge */}
