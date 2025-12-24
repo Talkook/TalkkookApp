@@ -161,7 +161,7 @@ const VerifyPhoneScreen = () => {
 
     // Handle change phone number button press
     const handleChangePhonePress = () => {
-        navigation.goBack();
+        navigation.navigate('Login');
     };
 
 

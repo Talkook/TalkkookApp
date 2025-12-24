@@ -40,7 +40,7 @@ const SuccessOverlay = () => {
         text1: "Info",
         text2: messageText,
         position: "top",
-        visibilityTime: 20000,
+        visibilityTime: 10000,
         autoHide: true,
       });
     }
