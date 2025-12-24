@@ -35,32 +35,51 @@ export const ScreenWrapper = ({
   // Determine status bar style
   const finalStatusBarStyle = statusBarStyle || (isDark ? 'dark' : 'light'); // "auto"
 
+  // Get navigation bar background color based on theme
+  // For light theme, use a light color; for dark theme, use a dark color
+  const navBarBgColor = isDark 
+    ? theme.navBarBackgroundColor 
+    : theme.surface || '#FFFFFF';
+
+  // Determine navigation bar button style based on theme
+  // Light buttons (white icons) for dark backgrounds, dark buttons (black icons) for light backgrounds
+  const navBarButtonStyle = isDark ? 'light' : 'dark';
+
   // Handle Android NavigationBar styling
   useEffect(() => {
     if (Platform.OS === 'android') {
-      // برای Android 15+ با edge-to-edge، فقط می‌توانیم رنگ دکمه‌ها را تنظیم کنیم
-      // رنگ پس‌زمینه باید با View overlay شبیه‌سازی شود
-      NavigationBar.setButtonStyleAsync('light');
+      // تنظیم استایل دکمه‌های ناوبری بر اساس تم
+      // برای تم دارک: دکمه‌های روشن (آیکون‌های سفید)
+      // برای تم لایت: دکمه‌های تیره (آیکون‌های سیاه)
+      NavigationBar.setButtonStyleAsync(navBarButtonStyle).catch((error) => {
+        console.log('Failed to set navigation bar button style:', error);
+      });
       
-      // برای نسخه‌های قدیمی‌تر Android که edge-to-edge ندارند
+      // برای Android با edge-to-edge (Android 15+ یا دستگاه‌هایی که edge-to-edge فعال دارند)
+      // نمی‌توانیم رنگ پس‌زمینه را مستقیماً تنظیم کنیم
+      // بنابراین از View overlay استفاده می‌کنیم
+      
+      // برای نسخه‌های قدیمی‌تر Android که edge-to-edge ندارند (insets.bottom === 0)
       // می‌توانیم رنگ پس‌زمینه را مستقیماً تنظیم کنیم
       if (insets.bottom === 0) {
         try {
-          NavigationBar.setBackgroundColorAsync(finalBackgroundColor);
+          // استفاده از رنگ پس‌زمینه ناوبری بر اساس تم
+          NavigationBar.setBackgroundColorAsync(navBarBgColor);
         } catch (error) {
           // اگر edge-to-edge فعال باشد، این خطا می‌دهد
           console.log('Navigation bar background color not supported with edge-to-edge');
         }
       }
     }
-  }, [insets.bottom, finalBackgroundColor]);
+  }, [insets.bottom, navBarBgColor, navBarButtonStyle, isDark]);
 
   return (
     <SafeAreaView className="flex-1" style={{ backgroundColor: finalBackgroundColor }}>
       <StatusBar style={finalStatusBarStyle} translucent={Platform.OS === 'android'} />
       {children}
       
-      {/* Navigation Bar Overlay برای Android 15+ با edge-to-edge */}
+      {/* Navigation Bar Overlay برای Android با edge-to-edge */}
+      {/* این overlay برای Android 15+ و دستگاه‌هایی که edge-to-edge فعال دارند استفاده می‌شود */}
       {Platform.OS === 'android' && insets.bottom > 0 && enableNavBarOverlay && (
         <View 
           style={{
@@ -69,7 +88,10 @@ export const ScreenWrapper = ({
             left: 0,
             right: 0,
             height: insets.bottom,
-            backgroundColor: theme.navBarBackgroundColor,
+            // استفاده از رنگ پس‌زمینه ناوبری بر اساس تم
+            // برای تم لایت: رنگ روشن (سطح اصلی)
+            // برای تم دارک: رنگ تیره (navBarBackgroundColor)
+            backgroundColor: navBarBgColor,
           }}
         />
       )}
