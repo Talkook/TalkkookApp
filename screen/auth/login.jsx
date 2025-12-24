@@ -13,6 +13,7 @@ import { getThemeColors } from '../../theme/constants';
 
 
 import { superPublicMultipleData } from '../../store/superPublic/superPublicSlice';
+import { sendCode } from '../../store/auth/authSlice';
 import PhoneNumberInput from '../../components/login/PhoneNumberInput';
 
 
@@ -87,6 +88,15 @@ const LoginScreen = () => {
         shallowEqual
       );
 
+    const { isLoading: isAuthLoading, error: authError, state: authState } = useSelector(
+        (state) => ({
+          isLoading: state.auth.isLoading,
+          error: state.auth.error,
+          state: state.auth.state,
+        }),
+        shallowEqual
+      );
+
 
       const countryCodes = useMemo(() => {
         const transformed = transformPhoneSuffixes(showPhoneSuffixes);
@@ -139,13 +149,24 @@ const LoginScreen = () => {
 
 
 
-    const handleContinuePress = () => {
-        if (parsedPhone?.isValid() && !(showIsLoading && !hasBackendData) && selectedCountry) {
+    const handleContinuePress = async () => {
+        if (parsedPhone?.isValid() && !(showIsLoading && !hasBackendData) && selectedCountry && !isAuthLoading) {
             const e164Number = parsedPhone.number || `${selectedCountry.code}${phoneDigits}`;
-            navigation.navigate('VerifyPhone', {
-                phoneNumber: e164Number,
-                countryCode: selectedCountry.code,
-            });
+            
+            try {
+                const result = await dispatch(sendCode({ phoneNumber: e164Number })).unwrap();
+                
+                // On success, navigate to VerifyPhone
+                if (result && result.requestId) {
+                    navigation.navigate('VerifyPhone', {
+                        phoneNumber: e164Number,
+                        countryCode: selectedCountry.code,
+                    });
+                }
+            } catch (error) {
+                // Error will be handled by ErrorOverlay component
+                console.error('Send code error:', error);
+            }
         }
     };
 
@@ -291,8 +312,8 @@ const LoginScreen = () => {
                         <Button
                             variant="normal"
                             text="Send OTP Message"
-                            disabled={!isValidPhone || (showIsLoading && !hasBackendData)}
-                            loading={showIsLoading && !hasBackendData}
+                            disabled={!isValidPhone || (showIsLoading && !hasBackendData) || isAuthLoading}
+                            loading={(showIsLoading && !hasBackendData) || isAuthLoading}
                             onPress={handleContinuePress}
                             style={{ marginBottom: isSmall ? 28 : isLarge ? 36 : 32, width: '100%' ,minHeight: isSmall ? 52 : isLarge ? 60 : 56}}
                             forceTheme="light"

@@ -8,6 +8,8 @@ import {
   API_URL,
   AUTH_REFRESH_TOKEN_PREFIXES,
   AUTH_REFRESH_TOKEN_ADDRESS,
+  AUTH_SEND_CODE_ADDRESS,
+  AUTH_VERIFY_CODE_ADDRESS,
 } from "../utils/baseUrls";
 // import { disconnectAndClearWebSocket } from "../store/dashboardStreamingApi";
 
@@ -33,7 +35,7 @@ const processQueue = (error, token = null) => {
 const refreshToken = async () => {
   const refreshToken = await AsyncStorage.getItem(AUTH_REFRESH_TOKEN_PREFIXES);
   if (!refreshToken) {
-    Error("No refresh token found");
+    throw new Error("No refresh token found");
   }
   try {
     const res = await axios.post(`${API_URL}${AUTH_REFRESH_TOKEN_ADDRESS}`, {
@@ -129,45 +131,58 @@ api.interceptors.response.use(
 
     // If 401 and haven't retried yet
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+      // Check if this is a public endpoint (doesn't require auth)
+      const publicEndpoints = [
+        AUTH_SEND_CODE_ADDRESS,
+        AUTH_VERIFY_CODE_ADDRESS,
+        AUTH_REFRESH_TOKEN_ADDRESS,
+      ];
+      const isPublicEndpoint = publicEndpoints.some(endpoint => 
+        originalRequest.url?.includes(endpoint)
+      );
 
-      try {
-        const refreshTokenValue = await AsyncStorage.getItem(
-          AUTH_REFRESH_TOKEN_PREFIXES
-        );
+      // Only try to refresh token for authenticated endpoints
+      if (!isPublicEndpoint) {
+        originalRequest._retry = true;
 
-        if (!refreshTokenValue) {
-          throw new Error("No refresh token");
-        }
+        try {
+          const refreshTokenValue = await AsyncStorage.getItem(
+            AUTH_REFRESH_TOKEN_PREFIXES
+          );
 
-        const res = await axios.post(
-          `${API_URL}${AUTH_REFRESH_TOKEN_ADDRESS}`,
-          {
-            [AUTH_REFRESH_TOKEN_PREFIXES]: refreshTokenValue,
+          if (!refreshTokenValue) {
+            throw new Error("No refresh token");
           }
-        );
 
-        if (res.status === 200) {
-          await AsyncStorage.setItem(
-            AUTH_ACCESS_TOKEN_PREFIXES,
-            res.data[AUTH_ACCESS_TOKEN_PREFIXES]
-          );
-          await AsyncStorage.setItem(
-            AUTH_REFRESH_TOKEN_PREFIXES,
-            res.data[AUTH_REFRESH_TOKEN_PREFIXES]
+          const res = await axios.post(
+            `${API_URL}${AUTH_REFRESH_TOKEN_ADDRESS}`,
+            {
+              [AUTH_REFRESH_TOKEN_PREFIXES]: refreshTokenValue,
+            }
           );
 
-          // Retry original request with new token
-          originalRequest.headers.Authorization = `Bearer ${res.data[AUTH_ACCESS_TOKEN_PREFIXES]}`;
-          return api(originalRequest);
+          if (res.status === 200) {
+            await AsyncStorage.setItem(
+              AUTH_ACCESS_TOKEN_PREFIXES,
+              res.data[AUTH_ACCESS_TOKEN_PREFIXES]
+            );
+            await AsyncStorage.setItem(
+              AUTH_REFRESH_TOKEN_PREFIXES,
+              res.data[AUTH_REFRESH_TOKEN_PREFIXES]
+            );
+
+            // Retry original request with new token
+            originalRequest.headers.Authorization = `Bearer ${res.data[AUTH_ACCESS_TOKEN_PREFIXES]}`;
+            return api(originalRequest);
+          }
+        } catch (refreshError) {
+          // Refresh failed - logout user
+          await AsyncStorage.removeItem(AUTH_ACCESS_TOKEN_PREFIXES);
+          await AsyncStorage.removeItem(AUTH_REFRESH_TOKEN_PREFIXES);
+          //disconnectAndClearWebSocket();
+          navigate("Login");
+          return Promise.reject(refreshError);
         }
-      } catch (refreshError) {
-        // Refresh failed - logout user
-        await AsyncStorage.removeItem(AUTH_ACCESS_TOKEN_PREFIXES);
-        await AsyncStorage.removeItem(AUTH_REFRESH_TOKEN_PREFIXES);
-        //disconnectAndClearWebSocket();
-        navigate("Login");
-        return Promise.reject(refreshError);
       }
     }
 

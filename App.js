@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Animated } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { useFonts } from 'expo-font';
-import { Provider } from 'react-redux';
+import { Provider, useSelector, useDispatch } from 'react-redux';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { navigationRef } from './hooks/navigationRef';
@@ -15,59 +15,72 @@ import { ThemeProvider } from './components/public/ThemeProvider';
 import ErrorOverlay from './components/public/ErrorOverlay';
 import SuccessOverlay from './components/public/SuccessOverlay';
 import ThemedToast from './components/public/ThemedToast';
+import { loadTokensFromStorage } from './store/auth/authSlice';
 
-export default function App() {
+function AppContent() {
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const [isLoadingTokens, setIsLoadingTokens] = useState(true);
 
+  // Load tokens from storage on app start
+  useEffect(() => {
+    const loadTokens = async () => {
+      try {
+        await dispatch(loadTokensFromStorage()).unwrap();
+      } catch (error) {
+        console.log('No tokens found in storage');
+      } finally {
+        setIsLoadingTokens(false);
+      }
+    };
+    loadTokens();
+  }, [dispatch]);
 
-  const [fontsLoaded,fontError] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     'Irsans': require('./assets/fonts/Irsans.ttf'),
     'Montserrat': require('./assets/fonts/Montserrat.ttf'),
     'Pacifico': require('./assets/fonts/Pacifico.ttf'),
     'NunitoSans': require('./assets/fonts/NunitoSans.ttf'),
     'DaysOne': require('./assets/fonts/DaysOne.ttf'),
   });
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || isLoadingTokens) {
     return (
-      <Provider store={store}>
-        <ThemeProvider>
-          <View>
-            <Text>Loading fonts...</Text>
-          </View>
-        </ThemeProvider>
-      </Provider>
+      <ThemeProvider>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text>Loading...</Text>
+        </View>
+      </ThemeProvider>
     );
   }
 
   if (fontError) {
     return (
-      <Provider store={store}>
-        <ThemeProvider>
-          <View>
-            <Text>Error loading fonts...</Text>
-          </View>
-        </ThemeProvider>
-      </Provider>
+      <ThemeProvider>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text>Error loading fonts...</Text>
+        </View>
+      </ThemeProvider>
     );
   }
 
-
-
-
-
   return (
-    <Provider store={store}>
-      <ThemeProvider>
-        <NavigationContainer ref={navigationRef}>
-          {isAuthenticated ? <AppNavigator /> : <AuthStack />}
-        </NavigationContainer>
-        <ErrorOverlay />
-        <SuccessOverlay />
-        <ThemedToast />
-      </ThemeProvider>
-    </Provider>
+    <ThemeProvider>
+      <NavigationContainer ref={navigationRef}>
+        {isAuthenticated ? <AppNavigator /> : <AuthStack />}
+      </NavigationContainer>
+      <ErrorOverlay />
+      <SuccessOverlay />
+      <ThemedToast />
+    </ThemeProvider>
   );
 }
 
+export default function App() {
+  return (
+    <Provider store={store}>
+      <AppContent />
+    </Provider>
+  );
+}
 

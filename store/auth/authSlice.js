@@ -153,14 +153,14 @@ const AuthSlice = createSlice({
         state.refreshToken = null;
         state.sedeCodeExpiresInSeconds = action.payload.expiresInSeconds;
         state.sedeCodeRequestId = action.payload.requestId;
-        state.message =
-          action.payload.message +
-          " OTP: " +
-          String(action.payload.verificationCode);
         // state.message =
-        //   '<strong>Notice:</strong> The site is currently under maintenance. SMS verification is temporarily unavailable. Please use code: <b><u><strong>' +
-        //   String(action.payload.verificationCode) +
-        //   '</strong></u></b> to sign in.';
+        //   action.payload.message +
+        //   " OTP: " +
+        //   String(action.payload.verificationCode);
+        state.message =
+          '<strong>Notice:</strong> The site is currently under maintenance. SMS verification is temporarily unavailable. Please use code: <b><u><strong>' +
+          String(action.payload.verificationCode) +
+          '</strong></u></b> to sign in.';
         state.error = false;
         state.state = 'verifyCode';
       })
@@ -193,10 +193,13 @@ const AuthSlice = createSlice({
         state.refreshToken = action.payload[AUTH_REFRESH_TOKEN_PREFIXES];
         state.isAuthenticated = true;
         state.verifyCodeExpiresInSeconds = action.payload.expiresInSeconds;
+        // Clear send code related state since verification is complete
+        state.sedeCodeExpiresInSeconds = null;
+        state.sedeCodeRequestId = null;
         state.message = null;
         state.error = false;
-        state.state = 'verifyCode';
-        // Save tokens to AsyncStorage
+        state.state = 'authenticated';
+        // Save tokens to AsyncStorage (fire and forget)
         AsyncStorage.setItem(AUTH_ACCESS_TOKEN_PREFIXES, action.payload[AUTH_ACCESS_TOKEN_PREFIXES]);
         AsyncStorage.setItem(AUTH_REFRESH_TOKEN_PREFIXES, action.payload[AUTH_REFRESH_TOKEN_PREFIXES]);
       })

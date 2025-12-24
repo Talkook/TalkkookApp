@@ -9,6 +9,8 @@ import { useResponsiveSize } from '../../hooks/useResponsiveSize';
 import { Button } from '../../components/public/Button';
 import { ScreenWrapper } from '../../components/public/ScreenWrapper';
 import { getThemeColors } from '../../theme/constants';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { verifyCode, sendCode } from '../../store/auth/authSlice';
 
 // Background image path
 const BACKGROUND_IMAGE = require('../../assets/image/background/background-bg.png');
@@ -35,6 +37,7 @@ const formatPhoneNumber = (phoneNumber, countryCode) => {
 const VerifyPhoneScreen = () => {
     const route = useRoute();
     const navigation = useNavigation();
+    const dispatch = useDispatch();
     const { isSmall, isLarge } = useResponsiveSize();
     const { isDark } = useTheme();
     const theme = getThemeColors(isDark);
@@ -48,6 +51,22 @@ const VerifyPhoneScreen = () => {
     const formattedPhoneNumber = formatPhoneNumber(phoneNumber, countryCode);
 
     const isCodeComplete = code.length === CODE_LENGTH;
+
+    // Get auth state from Redux
+    const { 
+        isLoading: isAuthLoading, 
+        error: authError, 
+        sedeCodeRequestId,
+        isAuthenticated 
+    } = useSelector(
+        (state) => ({
+            isLoading: state.auth.isLoading,
+            error: state.auth.error,
+            sedeCodeRequestId: state.auth.sedeCodeRequestId,
+            isAuthenticated: state.auth.isAuthenticated,
+        }),
+        shallowEqual
+    );
 
 
 
@@ -64,6 +83,18 @@ const VerifyPhoneScreen = () => {
             setCanResend(true);
         }
     }, [resendTimer]);
+
+    // Navigate to main app when authenticated
+    useEffect(() => {
+        if (isAuthenticated) {
+            // Navigation will be handled by App.js based on isAuthenticated state
+            // But we can also navigate here if needed
+            // navigation.reset({
+            //     index: 0,
+            //     routes: [{ name: 'MainTab' }],
+            // });
+        }
+    }, [isAuthenticated]);
 
 
 
@@ -82,8 +113,6 @@ const VerifyPhoneScreen = () => {
 
     const handleCodeFilled = (codeValue) => {
         setCode(codeValue);
-        // Here you would verify the code with your API
-        console.log('Verifying code:', codeValue);
     };
 
     // Handle code text change
@@ -91,21 +120,42 @@ const VerifyPhoneScreen = () => {
         setCode(text);
     };
 
-    const handleResend = () => {
-        if (canResend) {
-            setResendTimer(RESEND_TIMER_DURATION);
-            setCanResend(false);
-            setCode('');
-            // Here you would call your API to resend the code
+    const handleResend = async () => {
+        if (canResend && !isAuthLoading && phoneNumber) {
+            try {
+                setResendTimer(RESEND_TIMER_DURATION);
+                setCanResend(false);
+                setCode('');
+                
+                await dispatch(sendCode({ phoneNumber })).unwrap();
+                // Success message will be shown by SuccessOverlay
+            } catch (error) {
+                // Error will be handled by ErrorOverlay component
+                console.error('Resend code error:', error);
+                // Reset timer on error so user can try again
+                setCanResend(true);
+            }
         }
     };
 
     // Handle verify code button press
-    const handleVerifyPress = () => {
-        if (isCodeComplete) {
-            // Here you would verify the code with your API
-            // navigation.navigate('NextScreen');
-            handleCodeFilled(code);
+    const handleVerifyPress = async () => {
+        if (isCodeComplete && !isAuthLoading && sedeCodeRequestId) {
+            try {
+                await dispatch(verifyCode({ 
+                    code, 
+                    requestId: sedeCodeRequestId,
+                    phoneNumber 
+                })).unwrap();
+                
+                // On success, isAuthenticated will be set to true
+                // Navigation will be handled by App.js
+            } catch (error) {
+                // Error will be handled by ErrorOverlay component
+                console.error('Verify code error:', error);
+                // Clear code on error so user can try again
+                setCode('');
+            }
         }
     };
 
@@ -411,7 +461,8 @@ const VerifyPhoneScreen = () => {
                                 <Button
                                     variant="normal"
                                     text="Verify Code"
-                                    disabled={!isCodeComplete}
+                                    disabled={!isCodeComplete || isAuthLoading || !sedeCodeRequestId}
+                                    loading={isAuthLoading}
                                     onPress={handleVerifyPress}
                                     icon="checkmark"
                                     iconPosition="left"
@@ -425,7 +476,8 @@ const VerifyPhoneScreen = () => {
                                     <Button
                                         variant="normal"
                                         text={canResend ? 'Resend Code' : `Resend code in ${resendTimer}s`}
-                                        disabled={!canResend}
+                                        disabled={!canResend || isAuthLoading || !phoneNumber}
+                                        loading={isAuthLoading}
                                         onPress={handleResend}
                                         icon={canResend ? 'refresh' : 'time-outline'}
                                         iconPosition="left"
