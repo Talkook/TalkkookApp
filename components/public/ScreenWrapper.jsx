@@ -81,8 +81,9 @@ export const ScreenWrapper = ({
   return (
     <SafeAreaView className="flex-1">
       <StatusBar 
+        style={finalStatusBarStyle2}
         translucent={Platform.OS === 'android'} 
-        backgroundColor={Platform.OS === 'android' && insets.top === 0 ? finalBackgroundColor : undefined}
+        backgroundColor={Platform.OS === 'android' && insets.top === 0 ? finalStatusBarStyle : undefined}
       />
       
       {/* Status Bar Overlay برای edge-to-edge (Android و iOS) */}
