@@ -79,6 +79,7 @@ const LoginScreen = () => {
     const { isSmall, isLarge } = useResponsiveSize();
     const { isDark } = useTheme();
     const theme = getThemeColors(isDark);
+    const darkTheme = getThemeColors(true);
 
     const { showPhoneSuffixes, showIsLoading } = useSelector(
         (state) => ({
@@ -172,7 +173,13 @@ const LoginScreen = () => {
 
 
     return (
-<ScreenWrapper>
+<ScreenWrapper 
+        backgroundColor={theme.primary}
+        statusBarStyle="light"
+        statusBarBackgroundColor={theme.primary}
+        navigationBarBackgroundColor={darkTheme.navBarBackgroundColor}
+        navigationBarButtonStyle="light"
+      >
 <ImageBackground 
                 source={BACKGROUND_IMAGE}
                 className="flex-1"

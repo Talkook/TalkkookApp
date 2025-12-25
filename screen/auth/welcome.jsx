@@ -23,6 +23,7 @@ const WelcomeScreen = () => {
   const { isSmall, isLarge } = useResponsiveSize();
   const { isDark, toggleTheme } = useTheme();
   const theme = getThemeColors(isDark);
+  const darkTheme = getThemeColors(true);
 
 
 
@@ -77,7 +78,13 @@ const handleScroll = (event) => {
 
 
     return (
-      <ScreenWrapper backgroundColor={theme.primary}>
+      <ScreenWrapper 
+        backgroundColor={theme.primary}
+        statusBarStyle="light"
+        statusBarBackgroundColor={theme.primary}
+        navigationBarBackgroundColor={darkTheme.navBarBackgroundColor}
+        navigationBarButtonStyle="light"
+      >
         <ImageBackground 
           source={BACKGROUND_IMAGE}
           className="flex-1"

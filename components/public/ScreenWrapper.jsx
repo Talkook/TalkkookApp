@@ -16,14 +16,20 @@ import { getThemeColors } from '../../theme/constants';
  * 
  * @param {ReactNode} children - Screen content
  * @param {string} backgroundColor - Background color (default: theme.primary)
- * @param {string} statusBarStyle - StatusBar style: 'light-content' | 'dark-content' (optional, auto-detected from theme)
+ * @param {string} statusBarStyle - StatusBar style: 'light' | 'dark' (optional, auto-detected from theme)
+ * @param {string} statusBarBackgroundColor - Custom status bar background color (optional, defaults to theme-based) - used for both StatusBar and its overlay
  * @param {boolean} enableNavBarOverlay - Enable Android navigation bar overlay (default: true)
+ * @param {string} navigationBarBackgroundColor - Custom navigation bar background color (optional, defaults to theme-based)
+ * @param {string} navigationBarButtonStyle - Custom navigation bar button style: 'light' | 'dark' (optional, defaults to theme-based)
  */
 export const ScreenWrapper = ({
   children,
   backgroundColor,
   statusBarStyle,
+  statusBarBackgroundColor,
   enableNavBarOverlay = true,
+  navigationBarBackgroundColor,
+  navigationBarButtonStyle,
 }) => {
   const { isDark } = useTheme();
   const theme = getThemeColors(isDark);
@@ -32,31 +38,42 @@ export const ScreenWrapper = ({
   // Use provided backgroundColor or theme primary
   const finalBackgroundColor = backgroundColor || theme.primary;
 
-  // Determine status bar style based on theme
+  // Determine status bar style based on theme or custom prop
   // 'light' = light content (white text/icons) for dark backgrounds
   // 'dark' = dark content (black text/icons) for light backgrounds
   // For dark theme: use 'light' (white text on dark background)
   // For light theme: use 'dark' (black text on light background)
-  const finalStatusBarStyle = statusBarStyle || (isDark ? 'dark' : 'light');
-  const finalStatusBarStyle2 = isDark ? 'light' : 'dark';
+  // Use custom style if provided, otherwise use theme-based style
+  const finalStatusBarStyle = statusBarStyle || (isDark ? 'light' : 'dark');
+
+  // Get status bar background color based on theme or custom prop
+  // Use custom color if provided, otherwise use theme-based color
+  const statusBarBgColor = statusBarBackgroundColor || (isDark 
+    ? theme.navBarBackgroundColor 
+    : theme.surface || '#FFFFFF');
 
   // Get navigation bar background color based on theme
   // For light theme, use a light color; for dark theme, use a dark color
-  const navBarBgColor = isDark 
+  // Use custom color if provided, otherwise use theme-based color
+  const navBarBgColor = navigationBarBackgroundColor || (isDark 
     ? theme.navBarBackgroundColor 
-    : theme.surface || '#FFFFFF';
+    : theme.surface || '#FFFFFF');
 
   // Determine navigation bar button style based on theme
   // Light buttons (white icons) for dark backgrounds, dark buttons (black icons) for light backgrounds
-  const navBarButtonStyle = isDark ? 'light' : 'dark';
+  // Use custom style if provided, otherwise use theme-based style
+  const finalNavBarButtonStyle = navigationBarButtonStyle || (isDark ? 'light' : 'dark');
+
+  // Status bar overlay uses the same background color as status bar
+  const statusBarOverlayBgColor = statusBarBgColor;
 
   // Handle Android NavigationBar styling
   useEffect(() => {
     if (Platform.OS === 'android') {
-      // تنظیم استایل دکمه‌های ناوبری بر اساس تم
+      // تنظیم استایل دکمه‌های ناوبری بر اساس تم یا مقدار سفارشی
       // برای تم دارک: دکمه‌های روشن (آیکون‌های سفید)
       // برای تم لایت: دکمه‌های تیره (آیکون‌های سیاه)
-      NavigationBar.setButtonStyleAsync(navBarButtonStyle).catch((error) => {
+      NavigationBar.setButtonStyleAsync(finalNavBarButtonStyle).catch((error) => {
         console.log('Failed to set navigation bar button style:', error);
       });
       
@@ -68,7 +85,7 @@ export const ScreenWrapper = ({
       // می‌توانیم رنگ پس‌زمینه را مستقیماً تنظیم کنیم
       if (insets.bottom === 0) {
         try {
-          // استفاده از رنگ پس‌زمینه ناوبری بر اساس تم
+          // استفاده از رنگ پس‌زمینه ناوبری بر اساس تم یا مقدار سفارشی
           NavigationBar.setBackgroundColorAsync(navBarBgColor);
         } catch (error) {
           // اگر edge-to-edge فعال باشد، این خطا می‌دهد
@@ -76,14 +93,14 @@ export const ScreenWrapper = ({
         }
       }
     }
-  }, [insets.bottom, navBarBgColor, navBarButtonStyle, isDark]);
+  }, [insets.bottom, navBarBgColor, finalNavBarButtonStyle, isDark]);
 
   return (
     <SafeAreaView className="flex-1">
       <StatusBar 
-        style={finalStatusBarStyle2}
+        style={finalStatusBarStyle}
         translucent={Platform.OS === 'android'} 
-        backgroundColor={Platform.OS === 'android' && insets.top === 0 ? finalStatusBarStyle : undefined}
+        backgroundColor={Platform.OS === 'android' && insets.top === 0 ? statusBarBgColor : undefined}
       />
       
       {/* Status Bar Overlay برای edge-to-edge (Android و iOS) */}
@@ -98,7 +115,7 @@ export const ScreenWrapper = ({
             left: 0,
             right: 0,
             height: insets.top,
-            backgroundColor: navBarBgColor,
+            backgroundColor: statusBarOverlayBgColor,
             zIndex: 1000,
           }}
         />
